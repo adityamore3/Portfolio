@@ -1,0 +1,198 @@
+/* ------------------ Base & Background ------------------ */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins', sans-serif;
+  background-color: #0f172a;
+  background-image:
+    radial-gradient(#ffffff11 1px, transparent 1px),
+    radial-gradient(#ffffff11 1px, transparent 1px);
+  background-size: 20px 20px;
+  background-position: 0 0, 10px 10px;
+  color: white;
+  line-height: 1.6;
+}
+
+/* Smooth transitions globally */
+* {
+  transition: all 0.3s ease;
+}
+/* Logo Text  */
+/* Logo text styling */
+.logo-text {
+  font-weight: bold;
+  font-size: 1.5rem;
+  background: linear-gradient(90deg, #06b6d4, #7aa6ed);
+  background-size: 200% auto;
+   background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+
+  display: inline-block;
+  transition: all 0.4s ease;
+  text-shadow: 0 0 10px rgba(6, 182, 212, 0.3), 
+               0 0 20px rgba(6, 182, 212, 0.2);
+}
+
+/* Gradient animation on hover */
+.logo-text:hover {
+  background-position: 100% center;
+  transform: scale(1.05);
+  text-shadow: 0 0 15px rgba(6, 182, 212, 0.6), 
+               0 0 30px rgba(59, 130, 246, 0.4);
+}
+
+/* ------------------ Navbar Styles ------------------ */
+nav {
+  backdrop-filter: blur(10px);
+  background: rgba(15, 23, 42, 0.85);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+nav ul li a {
+  position: relative;
+  color: white;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+nav ul li a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 0;
+  height: 2px;
+  background: #06b6d4;
+  box-shadow: 0 0 8px #06b6d4;
+  transition: width 0.3s;
+}
+
+nav ul li a:hover {
+  color: #06b6d4;
+  text-shadow: 0 0 5px #06b6d4;
+}
+
+nav ul li a:hover::after {
+  width: 100%;
+}
+
+/* ------------------ Mobile Menu ------------------ */
+#mobile-backdrop {
+  background: rgba(0, 0, 0, 0.6);
+  opacity: 0;
+  pointer-events: none;
+}
+
+#mobile-backdrop.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+#mobile-menu {
+  transform: translateX(-100%);
+  background: #0f172a;
+  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.4);
+}
+
+#mobile-menu.open {
+  transform: translateX(0);
+}
+
+.mobile-link {
+  width: 100%;
+  text-align: left;
+  font-size: 1.1rem;
+  padding: 0.75rem 1rem;
+}
+
+.mobile-link:hover {
+  color: #06b6d4;
+  background: rgba(6, 182, 212, 0.1);
+  border-left: 3px solid #06b6d4;
+}
+
+/* ------------------ Social Buttons ------------------ */
+.social-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 0 15px rgba(6, 182, 212, 0.3);
+  cursor: pointer;
+}
+
+.social-btn i {
+  font-size: 1.5rem;
+  color: #06b6d4;
+}
+
+.social-btn:hover {
+  background: #06b6d4;
+  box-shadow: 0 0 20px #06b6d4;
+}
+
+.social-btn:hover i {
+  color: white;
+}
+
+/* ------------------ Floating Logos Animation ------------------ */
+#floating-logos {
+  position: fixed;
+  top: 0; left: 0;
+  right: 0; bottom: 100px;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 10;
+}
+
+@keyframes floatLogo {
+  0%, 100% { opacity: 0; }
+  10%, 90% { opacity: 1; }
+  0% { transform: translate(var(--x1), var(--y1)) scale(var(--s)); }
+  100% { transform: translate(var(--x2), var(--y2)) scale(var(--s)); }
+}
+
+.floating-logo {
+  position: absolute;
+  width: 32px; height: 32px;
+  animation: floatLogo linear infinite;
+  filter: drop-shadow(0 0 4px #06b6d4);
+}
+
+/* ------------------ Wave Animation ------------------ */
+@keyframes wave {
+  0%, 100% { transform: rotate(0) }
+  15%     { transform: rotate(14deg) }
+  30%     { transform: rotate(-8deg) }
+  45%     { transform: rotate(14deg) }
+  60%     { transform: rotate(-4deg) }
+  75%     { transform: rotate(10deg) }
+}
+
+.animate-wave {
+  display: inline-block;
+  transform-origin: 70% 70%;
+  animation: wave 2s infinite;
+}
+
+/* ------------------ Footer ------------------ */
+footer {
+  background: rgba(15, 23, 42, 0.95);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 2rem 0;
+  text-align: center;
+  color: #aaa;
+  font-size: 0.9rem;
+}
+
+footer a {
+  color: #06b6d4;
+}
+
+footer a:hover {
+  text-shadow: 0 0 5px #06b6d4;
+}

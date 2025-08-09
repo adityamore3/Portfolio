@@ -1,2 +1,2 @@
-# -Portfolio
-I’m Aditya, a Full-Stack Software Engineer with 1.3 years of experience building and optimizing scalable web applications, combining strong front-end and back-end development expertise to deliver high-quality solutions.
+# My-Portfolio
+Hi! I'm Aditya More , A .NET Full Stack Developer with 1.2 years of hands-on experience. I also love sharing insights through my Medium blog — writing keeps me inspired.

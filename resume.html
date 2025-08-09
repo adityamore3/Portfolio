@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Resume — Aditya More</title>
+
+  <!-- Tailwind & Icons -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css"
+        rel="stylesheet"/>
+  <link rel="stylesheet" href="styles.css"/>
+  <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
+     
+
+  <style>
+    /* Star‑dot background */
+    body {
+      background-color: #0f172a;
+      background-image:
+        radial-gradient(#ffffff11 1px, transparent 1px),
+        radial-gradient(#ffffff11 1px, transparent 1px);
+      background-size: 20px 20px;
+      background-position: 0 0, 10px 10px;
+    }
+    /* Resume image styling */
+    .resume-img {
+      width: 100%;
+      display: block;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col overflow-x-hidden">
+
+  <!-- NAVBAR -->
+  <div id="navbar"></div>
+<main>
+<!-- Top Download & Info Section -->
+<section class="pt-32 pb-10 flex flex-col items-center text-center">
+  <!-- Decorative Background Blobs -->
+   <div class="absolute -top-20 -left-20 w-96 h-96 bg-cyan-500/20 rounded-full blur-3xl animate-pulse"></div>
+  <div class="absolute -bottom-20 -right-20 w-96 h-96 bg-pink-500/20 rounded-full blur-3xl animate-pulse"></div>
+
+ 
+  <h1 class="text-4xl font-bold text-white mb-2">My Resume</h1>
+  <p class="text-gray-400 mb-6">Last Updated: <span class="text-[#38bdf8]">August 2025</span></p>
+
+  <div class="flex gap-4">
+    <!-- Main Download -->
+    <a href="Aditya More Resume.pdf" download="Aditya_More_Resume.pdf"
+       class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-cyan-400 to-blue-500 text-[#0f172a] font-semibold rounded-full shadow-lg hover:scale-105 transition transform">
+      <i class="fas fa-download mr-2"></i> Download PDF
+    </a>
+    <!-- Print -->
+    <button onclick="window.print()"
+       class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-pink-400 to-red-500 text-white font-semibold rounded-full shadow-lg hover:scale-105 transition transform">
+      <i class="fas fa-print mr-2"></i> Print
+    </button>
+  </div>
+</section>
+
+<!-- Resume Viewer with Features -->
+<div class="flex-grow flex justify-center px-4">
+  <div class="relative w-full max-w-5xl bg-[#0f172a] p-1 rounded-3xl shadow-2xl 
+              bg-gradient-to-br from-cyan-500 via-blue-500 to-purple-600">
+    <!-- Inner white frame -->
+    <div class="bg-white rounded-2xl overflow-hidden">
+      <object data="Aditya More Resume.pdf" type="application/pdf" width="100%" height="800px">
+        <p class="p-6 text-center text-gray-700">
+          Your browser does not support embedded PDFs. 
+          <a href="Aditya More Resume.pdf" class="text-blue-600 hover:underline">Download the PDF</a> to view it.
+        </p>
+      </object>
+    </div>
+
+    <!-- Floating Action Buttons -->
+    <div class="absolute top-4 right-4 flex flex-col gap-3">
+      <a href="Aditya More Resume.pdf" download="Aditya_More_Resume.pdf"
+         class="p-3 bg-cyan-500 text-white rounded-full shadow-lg hover:bg-cyan-600 transition" title="Download">
+        <i class="fas fa-download"></i>
+      </a>
+      <button onclick="navigator.share ? navigator.share({ title: 'Aditya More Resume', url: window.location.href }) : alert('Sharing not supported on this browser');"
+         class="p-3 bg-green-500 text-white rounded-full shadow-lg hover:bg-green-600 transition" title="Share">
+        <i class="fas fa-share-alt"></i>
+      </button>
+      <button onclick="window.print()"
+         class="p-3 bg-pink-500 text-white rounded-full shadow-lg hover:bg-pink-600 transition" title="Print">
+        <i class="fas fa-print"></i>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Bottom Download Button -->
+<div class="pt-8 pb-20 flex justify-center">
+  <a href="Aditya More Resume.pdf" download="Aditya_More_Resume.pdf"
+     class="inline-flex items-center px-8 py-3 bg-gradient-to-r from-cyan-400 to-blue-500 text-[#0f172a] font-semibold rounded-full shadow-lg hover:scale-105 transition transform">
+    <i class="fas fa-download mr-2"></i>
+    Download Resume
+  </a>
+ </div>
+
+</main>
+
+  <!-- Footer (reuse your existing footer) -->
+
+  <div id="footer"></div>
+  <!-- Your Existing JS -->
+<script src="about.js" defer></script></body>
+</body>
+</html>

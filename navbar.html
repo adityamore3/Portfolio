@@ -1,0 +1,28 @@
+<nav class="fixed w-full bg-gradient-to-r from-[#0f172a]/95 via-[#1e293b]/95 to-[#0f172a]/95 backdrop-blur-lg px-6 py-4 flex items-center justify-between z-50 shadow-lg">
+  <a href="index.html" class="logo-text">
+    &lt;Aditya More /&gt;
+  </a>
+
+  <ul class="hidden md:flex space-x-8 items-center text-lg">
+    <li><a href="index.html" class="hover:text-cyan-300 flex items-center gap-1"><i class="ri-home-4-line"></i>Home</a></li>
+    <li><a href="about.html" class="hover:text-cyan-300 flex items-center gap-1"><i class="ri-user-line"></i>About</a></li>
+    <li><a href="project.html" class="hover:text-cyan-300 flex items-center gap-1"><i class="ri-code-box-line"></i>Projects</a></li>
+    <li><a href="resume.html" class="hover:text-cyan-300 flex items-center gap-1"><i class="ri-file-list-line"></i>Resume</a></li>
+    <li><a href="blog.html" class="hover:text-cyan-300 flex items-center gap-1"><i class="ri-discuss-line"></i>Blogs</a></li>
+  </ul>
+
+  <button id="burger" class="md:hidden text-2xl text-white z-50 hover:text-cyan-300">
+    <i class="ri-menu-line"></i>
+  </button>
+</nav>
+
+<div id="mobile-backdrop" class="fixed inset-0 bg-black/50 opacity-0 pointer-events-none transition-opacity duration-300 ease-in-out z-40"></div>
+<aside id="mobile-menu" class="fixed inset-y-0 left-0 w-3/4 max-w-xs bg-[#0f172a] backdrop-blur-md transform -translate-x-full transition-transform duration-300 ease-in-out z-50 shadow-lg">
+  <ul class="flex flex-col items-start justify-center h-full space-y-6 px-6 text-2xl">
+    <li><a href="index.html" class="mobile-link hover:text-cyan-300">Home</a></li>
+    <li><a href="about.html" class="mobile-link hover:text-cyan-300">About</a></li>
+    <li><a href="project.html" class="mobile-link hover:text-cyan-300">Projects</a></li>
+    <li><a href="resume.html" class="mobile-link hover:text-cyan-300">Resume</a></li>
+    <li><a href="blog.html" class="mobile-link hover:text-cyan-300">Blogs</a></li>
+  </ul>
+</aside>

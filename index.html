@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Aditya More – Portfolio</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css"
+        rel="stylesheet"/>
+  <link rel="stylesheet" href="styles.css"/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
+  <style>
+    @keyframes float {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+      100% { transform: translateY(0); }
+    }
+    .animate-float {
+      animation: float 4s ease-in-out infinite;
+    }
+    .delay-200 { animation-delay: 0.2s; }
+    .delay-400 { animation-delay: 0.4s; }
+    .delay-600 { animation-delay: 0.6s; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col overflow-x-hidden bg-[#0f172a] text-white font-sans">
+
+  <div class="flex-grow">
+    <!-- Floating Logos -->
+    <div id="floating-logos"></div>
+
+    <!-- NAVBAR -->
+    <div id="navbar"></div>
+
+    <!-- HERO SECTION -->
+    <section class="w-full bg-[#0f172a] text-center px-4 py-20 relative overflow-hidden">
+      <div class="absolute inset-0 bg-gradient-to-br from-[#0f172a] via-transparent to-cyan-900 opacity-30 pointer-events-none"></div>
+      <div class="container mx-auto px-4 flex flex-col-reverse lg:flex-row items-center min-h-[80vh] relative z-10">
+          <div class="absolute -top-20 -left-20 w-96 h-96 bg-cyan-500/20 rounded-full blur-3xl animate-pulse"></div>
+          <div class="absolute -bottom-20 -right-20 w-96 h-96 bg-pink-500/20 rounded-full divblur-3xl animate-pulse"></div>
+        <!-- Left Text -->
+        <div class="w-full lg:w-1/2 space-y-6 animate-fadeInUp">
+          <h2 class="text-4xl lg:text-5xl font-semibold">
+            Hi There! <span class="animate-wave inline-block">👋</span>
+          </h2>
+          <h1 class="text-5xl lg:text-6xl font-extrabold tracking-tight">
+            I'M <span class="text-cyan-400 drop-shadow-lg">Aditya More</span>
+          </h1>
+          <h3 class="text-3xl lg:text-4xl font-medium text-cyan-200">
+            <span id="typewriter" class="border-r-4 border-cyan-400 pr-1"></span>
+          </h3>
+        </div>
+
+        <!-- Right Image -->
+        <div class="w-full lg:w-1/2 mb-10 lg:mb-0 flex justify-center">
+          <img src="programmer-working-web-development-code-engineer-programming-python-php-java-script-computer.png"
+               alt="Coder Illustration"
+               class="w-full max-w-xl rounded-xl shadow-xl hover:scale-105 transform transition-transform duration-500"/>
+        </div>
+      </div>
+    </section>
+
+   
+
+   <!-- CONNECT -->
+<section id="connect" class="w-full bg-[#0f172a] text-center px-4 py-20 relative overflow-hidden">
+  <div class="absolute -top-20 -left-20 w-96 h-96 bg-cyan-500/20 rounded-full blur-3xl animate-pulse"></div>
+  <div class="absolute -bottom-20 -right-20 w-96 h-96 bg-pink-500/20 rounded-full blur-3xl animate-pulse"></div>
+
+  <!-- <img src="your-photo.jpg" alt="Aditya More" class="w-32 h-32 mx-auto rounded-full border-4 border-cyan-400 shadow-lg mb-6 hover:scale-105 transition animate-float"/> -->
+  <h2 class="text-4xl font-bold mb-2">FIND ME ON</h2>
+  <p class="mb-8 text-gray-300">Let's connect and collaborate</p>
+
+  <div class="flex flex-wrap justify-center gap-8 mb-10">
+    <a href="https://github.com/adityamore3" target="_blank" class="group relative w-20 h-20 flex flex-col items-center justify-center rounded-full bg-gradient-to-tr from-gray-800 to-gray-700 shadow-lg hover:scale-110 transition animate-float">
+      <i class="fab fa-github text-3xl text-white group-hover:text-cyan-300"></i>
+      <span class="mt-2 text-xs text-gray-400 group-hover:text-cyan-300">GitHub</span>
+    </a>
+    <a href="mailto:adieeoffical@gmail.com" class="group relative w-20 h-20 flex flex-col items-center justify-center rounded-full bg-gradient-to-tr from-pink-500 to-pink-400 shadow-lg hover:scale-110 transition animate-float delay-200">
+      <i class="fas fa-envelope text-3xl text-white"></i>
+      <span class="mt-2 text-xs text-gray-100">Email</span>
+    </a>
+    <a href="https://www.linkedin.com/in/adityamore3/" target="_blank" class="group relative w-20 h-20 flex flex-col items-center justify-center rounded-full bg-gradient-to-tr from-blue-600 to-blue-500 shadow-lg hover:scale-110 transition animate-float delay-400">
+      <i class="fab fa-linkedin-in text-3xl text-white"></i>
+      <span class="mt-2 text-xs text-gray-100">LinkedIn</span>
+    </a>
+    <a href="https://medium.com/@adityamore7860" target="_blank" class="group relative w-20 h-20 flex flex-col items-center justify-center rounded-full bg-gradient-to-tr from-black to-gray-800 shadow-lg hover:scale-110 transition animate-float delay-600">
+      <i class="fab fa-medium-m text-3xl text-white"></i>
+      <span class="mt-2 text-xs text-gray-100">Medium</span>
+    </a>
+  </div>
+</section>
+
+
+  <!-- FOOTER -->
+ <div id="footer"></div>
+
+  <script src="script.js"></script>
+    
+</body>
+</html>
