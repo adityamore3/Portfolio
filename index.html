@@ -300,22 +300,21 @@
 
     <!-- HERO SECTION -->
     <section class="w-full hero-gradient text-center px-4 py-20 relative overflow-hidden">
-      <!-- Floating Particles -->
+      <!-- Floating Particles (subtler opacity) -->
       <div class="particle particle-1"></div>
       <div class="particle particle-2"></div>
       <div class="particle particle-3"></div>
       <div class="particle particle-4"></div>
       <div class="particle particle-5"></div>
       
-      <!-- Enhanced Gradient Orbs -->
-      <div class="absolute -top-32 -left-32 w-[600px] h-[600px] bg-cyan-500/30 rounded-full blur-3xl animate-pulse"></div>
-      <div class="absolute -bottom-32 -right-32 w-[600px] h-[600px] bg-pink-500/30 rounded-full blur-3xl animate-pulse" style="animation-delay: 1.5s;"></div>
-      <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-purple-500/20 rounded-full blur-3xl animate-pulse" style="animation-delay: 3s;"></div>
+      <!-- Enhanced Gradient Orbs (reduced opacity, removed heavy pulse) -->
+      <div class="absolute -top-32 -left-32 w-[600px] h-[600px] bg-cyan-500/12 rounded-full blur-2xl animate-float"></div>
+      <div class="absolute -bottom-32 -right-32 w-[600px] h-[600px] bg-pink-500/12 rounded-full blur-2xl animate-float" style="animation-delay: 1.2s;"></div>
+      <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-purple-500/10 rounded-full blur-2xl animate-float" style="animation-delay: 2.4s;"></div>
       
       <div class="container mx-auto px-4 flex flex-col-reverse lg:flex-row items-center min-h-[85vh] relative z-10 gap-12">
-        <!-- Left Text -->
+        <!-- Left Text (kept structure, toned down visuals + subtle fade-in) -->
         <div class="w-full lg:w-1/2 space-y-8 text-left">
-          <!-- Code decoration -->
           <div class="code-decoration animate-fadeInLeft opacity-0">
             <span class="text-pink-400">&lt;</span>code<span class="text-pink-400">&gt;</span>
           </div>
@@ -334,7 +333,7 @@
           
           <div class="animate-fadeInLeft opacity-0 delay-600">
             <h3 class="text-3xl lg:text-4xl font-medium text-cyan-200">
-              <span id="typewriter" class="border-r-4 border-cyan-400 pr-1 typewriter-cursor"></span>
+              <span id="typewriter" class="border-r-2 border-cyan-400 pr-1 typewriter-cursor"></span>
             </h3>
           </div>
           
@@ -349,30 +348,31 @@
             </a>
           </div>
           
-          <!-- Code decoration -->
           <div class="code-decoration animate-fadeInLeft opacity-0 delay-800">
             <span class="text-pink-400">&lt;/</span>code<span class="text-pink-400">&gt;</span>
           </div>
         </div>
 
-        <!-- Right Image -->
+        <!-- Right Image (reduced glow, softer shadow and subtle float) -->
         <div class="w-full lg:w-1/2 mb-10 lg:mb-0 flex justify-center animate-fadeInRight opacity-0 delay-400">
           <div class="relative glow-card">
-            <div class="absolute inset-0 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 rounded-xl opacity-20 blur-2xl animate-pulse"></div>
+            <!-- subtle ambient gradient behind the image; much less intrusive -->
+            <div class="absolute inset-0 bg-gradient-to-r from-cyan-500/6 via-purple-500/6 to-pink-500/6 rounded-xl opacity-60 blur-sm"></div>
             <img src="programmer-working-web-development-code-engineer-programming-python-php-java-script-computer.png"
                  alt="Coder Illustration"
-                 class="w-full max-w-xl rounded-xl shadow-2xl hover-lift relative z-10 border-2 border-cyan-500/20"/>
+                 class="w-full max-w-xl rounded-xl soft-illustration relative z-10"/>
           </div>
         </div>
       </div>
       
-      <!-- Scroll Indicator -->
+      <!-- Scroll Indicator (unchanged) -->
       <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
         <div class="w-6 h-10 border-2 border-cyan-400 rounded-full flex justify-center">
           <div class="w-1 h-3 bg-cyan-400 rounded-full mt-2 animate-pulse"></div>
         </div>
       </div>
     </section>
+
 
     <!-- CONNECT -->
     <section id="connect" class="w-full bg-[#0f172a] text-center px-4 py-24 relative overflow-hidden">
@@ -448,4 +448,3 @@
     
 </body>
 </html>
-
