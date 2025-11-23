@@ -39,69 +39,90 @@
   <div id="navbar"></div>
 <main>
 <!-- Top Download & Info Section -->
-<section class="pt-32 pb-10 flex flex-col items-center text-center">
-  <!-- Decorative Background Blobs -->
-   <div class="absolute -top-20 -left-20 w-96 h-96 bg-cyan-500/20 rounded-full blur-3xl animate-pulse"></div>
-  <div class="absolute -bottom-20 -right-20 w-96 h-96 bg-pink-500/20 rounded-full blur-3xl animate-pulse"></div>
+<section class="pt-28 pb-10 flex flex-col items-center text-center relative overflow-hidden">
 
- 
-  <h1 class="text-4xl font-bold text-white mb-2">My Resume</h1>
-  <p class="text-gray-400 mb-6">Last Updated: <span class="text-[#38bdf8]">November 2025</span></p>
+  <!-- Responsive Background Blobs -->
+  <div class="absolute -top-20 -left-20 w-72 h-72 md:w-96 md:h-96 
+              bg-cyan-500/20 rounded-full blur-3xl animate-pulse"></div>
 
-  <div class="flex gap-4">
-    <!-- Main Download -->
+  <div class="absolute -bottom-20 -right-20 w-72 h-72 md:w-96 md:h-96 
+              bg-pink-500/20 rounded-full blur-3xl animate-pulse"></div>
+
+  <h1 class="text-3xl md:text-4xl font-bold text-white mb-2">My Resume</h1>
+  <p class="text-gray-400 mb-6 text-sm md:text-base">
+    Last Updated: <span class="text-[#38bdf8]">October 2025</span>
+  </p>
+
+  <!-- Buttons responsive -->
+  <div class="flex flex-col sm:flex-row gap-4 px-4 w-full justify-center">
     <a href="Aditya More Resume.pdf" download="Aditya_More_Resume.pdf"
-       class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-cyan-400 to-blue-500 text-[#0f172a] font-semibold rounded-full shadow-lg hover:scale-105 transition transform">
+       class="inline-flex items-center justify-center px-6 py-3 w-full sm:w-auto
+              bg-gradient-to-r from-cyan-400 to-blue-500 text-[#0f172a] font-semibold 
+              rounded-full shadow-lg hover:scale-105 transition">
       <i class="fas fa-download mr-2"></i> Download PDF
     </a>
-    <!-- Print -->
+
     <button onclick="window.print()"
-       class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-pink-400 to-red-500 text-white font-semibold rounded-full shadow-lg hover:scale-105 transition transform">
+       class="inline-flex items-center justify-center px-6 py-3 w-full sm:w-auto
+              bg-gradient-to-r from-pink-400 to-red-500 text-white font-semibold 
+              rounded-full shadow-lg hover:scale-105 transition">
       <i class="fas fa-print mr-2"></i> Print
     </button>
   </div>
 </section>
 
-<!-- Resume Viewer with Features -->
-<div class="flex-grow flex justify-center px-4">
-  <div class="relative w-full max-w-5xl bg-[#0f172a] p-1 rounded-3xl shadow-2xl 
+
+<!-- Resume Viewer -->
+<div class="flex-grow flex justify-center px-3 md:px-4">
+  <div class="relative w-full max-w-5xl 
+              p-[2px] rounded-3xl shadow-2xl 
               bg-gradient-to-br from-cyan-500 via-blue-500 to-purple-600">
-    <!-- Inner white frame -->
-    <div class="bg-white rounded-2xl overflow-hidden">
-      <object data="Aditya More Resume.pdf" type="application/pdf" width="100%" height="800px">
+
+    <div class="bg-white rounded-2xl overflow-hidden h-[500px] sm:h-[750px] md:h-[800px]">
+      <object data="Aditya More Resume.pdf"
+              type="application/pdf"
+              class="w-full h-full">
         <p class="p-6 text-center text-gray-700">
-          Your browser does not support embedded PDFs. 
-          <a href="Aditya More Resume.pdf" class="text-blue-600 hover:underline">Download the PDF</a> to view it.
+          Your browser does not support embedded PDFs.
+          <a href="Aditya More Resume.pdf" class="text-blue-600 hover:underline">
+            Download the PDF
+          </a>
         </p>
       </object>
     </div>
 
-    <!-- Floating Action Buttons -->
-    <div class="absolute top-4 right-4 flex flex-col gap-3">
+    <!-- Floating Buttons (now responsive) -->
+    <div class="absolute top-4 right-4 flex-col gap-3 hidden md:flex">
       <a href="Aditya More Resume.pdf" download="Aditya_More_Resume.pdf"
-         class="p-3 bg-cyan-500 text-white rounded-full shadow-lg hover:bg-cyan-600 transition" title="Download">
+         class="p-3 bg-cyan-500 text-white rounded-full shadow-lg hover:bg-cyan-600 transition">
         <i class="fas fa-download"></i>
       </a>
-      <button onclick="navigator.share ? navigator.share({ title: 'Aditya More Resume', url: window.location.href }) : alert('Sharing not supported on this browser');"
-         class="p-3 bg-green-500 text-white rounded-full shadow-lg hover:bg-green-600 transition" title="Share">
+
+      <button onclick="navigator.share ? navigator.share({ title: 'Aditya More Resume', url: window.location.href }) : alert('Sharing not supported');"
+         class="p-3 bg-green-500 text-white rounded-full shadow-lg hover:bg-green-600 transition">
         <i class="fas fa-share-alt"></i>
       </button>
+
       <button onclick="window.print()"
-         class="p-3 bg-pink-500 text-white rounded-full shadow-lg hover:bg-pink-600 transition" title="Print">
+         class="p-3 bg-pink-500 text-white rounded-full shadow-lg hover:bg-pink-600 transition">
         <i class="fas fa-print"></i>
       </button>
     </div>
+
   </div>
 </div>
 
-<!-- Bottom Download Button -->
-<div class="pt-8 pb-20 flex justify-center">
+
+<!-- Bottom Download Button Mobile Friendly -->
+<div class="pt-8 pb-16 flex justify-center">
   <a href="Aditya More Resume.pdf" download="Aditya_More_Resume.pdf"
-     class="inline-flex items-center px-8 py-3 bg-gradient-to-r from-cyan-400 to-blue-500 text-[#0f172a] font-semibold rounded-full shadow-lg hover:scale-105 transition transform">
-    <i class="fas fa-download mr-2"></i>
-    Download Resume
+     class="inline-flex items-center justify-center px-8 py-3 bg-gradient-to-r 
+            from-cyan-400 to-blue-500 text-[#0f172a] font-semibold rounded-full 
+            shadow-lg hover:scale-105 transition">
+    <i class="fas fa-download mr-2"></i> Download Resume
   </a>
- </div>
+</div>
+
 
 </main>
 
@@ -112,7 +133,6 @@
 <script src="about.js" defer></script></body>
 </body>
 </html>
-
 
 
 
