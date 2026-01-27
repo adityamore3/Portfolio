@@ -2,20 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
   <title>Resume — Aditya More</title>
 
-  <!-- Tailwind & Icons -->
   <script src="https://cdn.tailwindcss.com"></script>
-   <link rel="icon" type="image/png" href="favicon.jpg">
-  <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
-  <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css"
-        rel="stylesheet"/>
-  <link rel="stylesheet" href="styles.css"/>
-  <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
-     
-
+  <link rel="icon" type="image/png" href="favicon.jpg">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  
   <style>
     /* Star‑dot background */
     body {
@@ -25,116 +18,181 @@
         radial-gradient(#ffffff11 1px, transparent 1px);
       background-size: 20px 20px;
       background-position: 0 0, 10px 10px;
+      /* CSS Protection: Disable Text Selection & Dragging */
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      -webkit-touch-callout: none; /* iOS Safari disable long press */
     }
+
     /* Resume image styling */
-    .resume-img {
-      width: 100%;
-      display: block;
+    .resume-img { width: 100%; display: block; }
+
+    /* Print Protection: If they force print, show blank page */
+    @media print {
+        html, body { display: none !important; height: 0 !important; width: 0 !important; }
+    }
+    
+    /* Overlay to block interactions */
+    .protection-overlay {
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 100%;
+        z-index: 50;
+        background: transparent;
+    }
+
+    /* Watermark for Mobile Screenshots */
+    .watermark {
+        position: absolute;
+        top: 50%; left: 50%;
+        transform: translate(-50%, -50%) rotate(-45deg);
+        font-size: 3rem;
+        font-weight: bold;
+        color: rgba(0, 0, 0, 0.05); /* Very faint grey */
+        white-space: nowrap;
+        pointer-events: none;
+        z-index: 40;
     }
   </style>
 </head>
-<body class="min-h-screen flex flex-col overflow-x-hidden">
 
-  <!-- NAVBAR -->
+<body class="min-h-screen flex flex-col overflow-x-hidden" oncontextmenu="return false;">
+
   <div id="navbar"></div>
-<main>
-<!-- Top Download & Info Section -->
+
+<main id="main-content">
+
 <section class="pt-28 pb-10 flex flex-col items-center text-center relative overflow-hidden">
-
-  <!-- Responsive Background Blobs -->
-  <div class="absolute -top-20 -left-20 w-72 h-72 md:w-96 md:h-96 
-              bg-cyan-500/20 rounded-full blur-3xl animate-pulse"></div>
-
-  <div class="absolute -bottom-20 -right-20 w-72 h-72 md:w-96 md:h-96 
-              bg-pink-500/20 rounded-full blur-3xl animate-pulse"></div>
-
   <h1 class="text-3xl md:text-4xl font-bold text-white mb-2">My Resume</h1>
   <p class="text-gray-400 mb-6 text-sm md:text-base">
     Last Updated: <span class="text-[#38bdf8]">December 2025</span>
   </p>
 
-  <!-- Buttons responsive -->
-  <div class="flex flex-col sm:flex-row gap-4 px-4 w-full justify-center">
-    <a href="Aditya More Resume.pdf" download="Aditya_More_Resume.pdf"
-       class="inline-flex items-center justify-center px-6 py-3 w-full sm:w-auto
-              bg-gradient-to-r from-cyan-400 to-blue-500 text-[#0f172a] font-semibold 
-              rounded-full shadow-lg hover:scale-105 transition">
-      <i class="fas fa-download mr-2"></i> Download PDF
-    </a>
-
-    <button onclick="window.print()"
-       class="inline-flex items-center justify-center px-6 py-3 w-full sm:w-auto
-              bg-gradient-to-r from-pink-400 to-red-500 text-white font-semibold 
-              rounded-full shadow-lg hover:scale-105 transition">
-      <i class="fas fa-print mr-2"></i> Print
-    </button>
-  </div>
+  <button onclick="requestAccess()" 
+     class="inline-flex items-center justify-center px-6 py-3 
+            bg-gradient-to-r from-purple-500 to-pink-600 text-white font-semibold 
+            rounded-full shadow-lg hover:scale-105 transition border border-white/10">
+    <i class="fas fa-lock mr-2"></i> Request Permission to Download
+  </button>
+  
+  <p class="mt-3 text-xs text-gray-500">
+      <i class="fas fa-shield-alt"></i> Secure View Mode Enabled
+  </p>
 </section>
 
-
-<!-- Resume Viewer -->
 <div class="flex-grow flex justify-center px-3 md:px-4">
-  <div class="relative w-full max-w-5xl 
-              p-[2px] rounded-3xl shadow-2xl 
-              bg-gradient-to-br from-cyan-500 via-blue-500 to-purple-600">
+  <div class="relative w-full max-w-5xl p-[2px] rounded-3xl shadow-2xl bg-gradient-to-br from-cyan-500 via-blue-500 to-purple-600">
+    <div class="bg-white rounded-2xl overflow-hidden h-[500px] sm:h-[750px] md:h-[800px] relative">
+      
+      <div class="protection-overlay"></div>
 
-    <div class="bg-white rounded-2xl overflow-hidden h-[500px] sm:h-[750px] md:h-[800px]">
-      <object data="Aditya More Resume.pdf"
+      <div class="watermark">PREVIEW ONLY • ADITYA MORE</div>
+      <div class="watermark" style="top: 30%;">PREVIEW ONLY</div>
+      <div class="watermark" style="top: 70%;">PREVIEW ONLY</div>
+
+      <object data="Aditya More Resume.pdf#toolbar=0&navpanes=0&scrollbar=0"
               type="application/pdf"
-              class="w-full h-full">
-        <p class="p-6 text-center text-gray-700">
-          Your browser does not support embedded PDFs.
-          <a href="Aditya More Resume.pdf" class="text-blue-600 hover:underline">
-            Download the PDF
-          </a>
-        </p>
+              class="w-full h-full pointer-events-none">
+        <p class="p-6 text-center text-gray-700">Preview not supported on this device.</p>
       </object>
     </div>
-
-    <!-- Floating Buttons (now responsive) -->
-    <div class="absolute top-4 right-4 flex-col gap-3 hidden md:flex">
-      <a href="Aditya More Resume.pdf" download="Aditya_More_Resume.pdf"
-         class="p-3 bg-cyan-500 text-white rounded-full shadow-lg hover:bg-cyan-600 transition">
-        <i class="fas fa-download"></i>
-      </a>
-
-      <button onclick="navigator.share ? navigator.share({ title: 'Aditya More Resume', url: window.location.href }) : alert('Sharing not supported');"
-         class="p-3 bg-green-500 text-white rounded-full shadow-lg hover:bg-green-600 transition">
-        <i class="fas fa-share-alt"></i>
-      </button>
-
-      <button onclick="window.print()"
-         class="p-3 bg-pink-500 text-white rounded-full shadow-lg hover:bg-pink-600 transition">
-        <i class="fas fa-print"></i>
-      </button>
-    </div>
-
   </div>
 </div>
 
-
-<!-- Bottom Download Button Mobile Friendly -->
-<div class="pt-8 pb-16 flex justify-center">
-  <a href="Aditya More Resume.pdf" download="Aditya_More_Resume.pdf"
-     class="inline-flex items-center justify-center px-8 py-3 bg-gradient-to-r 
-            from-cyan-400 to-blue-500 text-[#0f172a] font-semibold rounded-full 
-            shadow-lg hover:scale-105 transition">
-    <i class="fas fa-download mr-2"></i> Download Resume
-  </a>
+<div class="pt-8 pb-16 flex justify-center text-gray-500 text-sm">
+  <p>Protected Content © Aditya More</p>
 </div>
-
 
 </main>
 
-  <!-- Footer (reuse your existing footer) -->
+<div id="footer"></div>
+<script src="about.js" defer></script>
 
-  <div id="footer"></div>
-  <!-- Your Existing JS -->
-<script src="about.js" defer></script></body>
+<script>
+    // --- SETTINGS ---
+    const SECRET_ACCESS_CODE = "Aditya2026"; 
+    const YOUR_EMAIL = "adieeoffical@gmail.com"; 
+
+    // --- 1. ACCESS CODE LOGIC ---
+    function requestAccess() {
+        let userCode = prompt("Please enter the Access Code to download:");
+        if (userCode === SECRET_ACCESS_CODE) {
+            alert("Access Granted.");
+            const link = document.createElement('a');
+            link.href = 'Aditya More Resume.pdf'; 
+            link.download = 'Aditya_More_Resume.pdf';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        } else if (userCode !== null) {
+            if(confirm("Incorrect Code. Email Aditya for access?")) {
+                window.location.href = `mailto:${YOUR_EMAIL}?subject=Resume Access Request&body=Hi Aditya, I would like to request access to download your resume.`;
+            }
+        }
+    }
+
+    // --- 2. ANTI-SCREENSHOT & KEYBOARD BLOCKER ---
+    
+    // Function to "Flashbang" the screen (Hide content immediately)
+    function killScreen() {
+        const content = document.getElementById('main-content');
+        content.style.visibility = 'hidden'; // Hide everything
+        content.style.opacity = '0'; 
+        
+        setTimeout(() => {
+            alert("Screenshots are disabled for privacy.");
+            content.style.visibility = 'visible';
+            content.style.opacity = '1';
+        }, 500); // Bring it back after alert
+    }
+
+    document.addEventListener('keydown', function(e) {
+        
+        // Block Ctrl + Shift + S (Snipping Tool shortcut in some browsers/OS)
+        if (e.ctrlKey && e.shiftKey && (e.key === 's' || e.key === 'S')) {
+            e.preventDefault();
+            killScreen();
+            return false;
+        }
+
+        // Block Print Screen (PrtSc)
+        if (e.key === 'PrintScreen' || e.keyCode === 44) {
+            killScreen(); 
+            navigator.clipboard.writeText(''); 
+            return false;
+        }
+
+        // Block Ctrl + P (Print)
+        if (e.ctrlKey && (e.key === 'p' || e.key === 'P')) {
+            e.preventDefault();
+            alert('Printing is disabled.');
+            return false;
+        }
+
+        // Block Ctrl + S (Save)
+        if (e.ctrlKey && (e.key === 's' || e.key === 'S')) {
+            e.preventDefault();
+            return false;
+        }
+        
+        // Block F12 / Ctrl+Shift+I (Developer Tools - Basic deterrent)
+        if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I')) {
+             e.preventDefault();
+             return false;
+        }
+    });
+
+    // --- 3. MOBILE LOGIC ---
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = "Restricted";
+        } else {
+            document.title = "Resume — Aditya More";
+        }
+    });
+
+</script>
+
 </body>
 </html>
-
-
-
-
-
