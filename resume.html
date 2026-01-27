@@ -8,6 +8,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet"/>
   <link rel="icon" type="image/png" href="favicon.jpg">
 
   <link rel="stylesheet" href="styles.css"/>
@@ -22,7 +23,7 @@
       background-size: 20px 20px;
       background-position: 0 0, 10px 10px;
       
-      /* Security: Disable Select & Touch interactions */
+      /* Security: Disable Select & Touch interactions on BODY */
       -webkit-user-select: none;
       -moz-user-select: none;
       -ms-user-select: none;
@@ -30,16 +31,24 @@
       -webkit-touch-callout: none;
     }
 
+    /* --- NAVBAR PRIORITY --- */
+    /* This ensures the navbar injected by about.js sits ABOVE the resume protection */
+    #navbar {
+        position: relative; 
+        z-index: 9999 !important; 
+        pointer-events: auto !important; 
+    }
+
     /* Print Protection */
     @media print {
         html, body { display: none !important; height: 0 !important; width: 0 !important; }
     }
     
-    /* Security Overlay */
+    /* Security Overlay (Lower than Navbar) */
     .protection-overlay {
         position: absolute;
         top: 0; left: 0; width: 100%; height: 100%;
-        z-index: 50;
+        z-index: 10; 
         background: transparent;
     }
 
@@ -50,10 +59,15 @@
         transform: translate(-50%, -50%) rotate(-45deg);
         font-size: 3rem;
         font-weight: bold;
-        color: rgba(255, 255, 255, 0.03); /* Extremely faint */
+        color: rgba(255, 255, 255, 0.03);
         white-space: nowrap;
         pointer-events: none;
-        z-index: 40;
+        z-index: 10;
+    }
+    
+    #main-content {
+        position: relative;
+        z-index: 1; 
     }
   </style>
 </head>
@@ -73,7 +87,8 @@
       <button onclick="requestAccess()" 
          class="inline-flex items-center justify-center px-6 py-3 
                 bg-gradient-to-r from-purple-500 to-pink-600 text-white font-semibold 
-                rounded-full shadow-lg hover:scale-105 transition border border-white/10">
+                rounded-full shadow-lg hover:scale-105 transition border border-white/10
+                relative z-20"> 
         <i class="fas fa-lock mr-2"></i> Request Permission to Download
       </button>
       
@@ -111,88 +126,8 @@
 
   <script src="about.js" defer></script>
 
+  <script src="restriction.js" defer></script>
 
-<script>
-    const SECRET_ACCESS_CODE = "Aditya2026"; 
-    const YOUR_EMAIL = "adieeoffical@gmail.com"; 
-
-    // --- 1. ACCESS CODE LOGIC ---
-    function requestAccess() {
-        let userCode = prompt("Please enter the Access Code to download:");
-        if (userCode === SECRET_ACCESS_CODE) {
-            alert("Access Granted.");
-            const link = document.createElement('a');
-            link.href = 'Aditya More Resume.pdf'; 
-            link.download = 'Aditya_More_Resume.pdf';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        } else if (userCode !== null) {
-            if(confirm("Incorrect Code. Email Aditya for access?")) {
-                window.location.href = `mailto:${YOUR_EMAIL}?subject=Resume Access Request&body=Hi Aditya, I would like to request access to download your resume.`;
-            }
-        }
-    }
-
-    // --- 2. ANTI-SCREENSHOT & KEYBOARD BLOCKER ---
-    function killScreen() {
-        const content = document.getElementById('main-content');
-        content.style.visibility = 'hidden'; 
-        content.style.opacity = '0'; 
-        
-        setTimeout(() => {
-            alert("Screenshots are disabled for privacy.");
-            content.style.visibility = 'visible';
-            content.style.opacity = '1';
-        }, 500); 
-    }
-
-    document.addEventListener('keydown', function(e) {
-        
-        // Block Ctrl + Shift + S (Snipping Tool)
-        if (e.ctrlKey && e.shiftKey && (e.key === 's' || e.key === 'S')) {
-            e.preventDefault();
-            killScreen();
-            return false;
-        }
-
-        // Block Print Screen (PrtSc)
-        if (e.key === 'PrintScreen' || e.keyCode === 44) {
-            killScreen(); 
-            navigator.clipboard.writeText(''); 
-            return false;
-        }
-
-        // Block Ctrl + P (Print)
-        if (e.ctrlKey && (e.key === 'p' || e.key === 'P')) {
-            e.preventDefault();
-            alert('Printing is disabled.');
-            return false;
-        }
-
-        // Block Ctrl + S (Save)
-        if (e.ctrlKey && (e.key === 's' || e.key === 'S')) {
-            e.preventDefault();
-            return false;
-        }
-        
-        // Block F12 (Dev Tools)
-        if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I')) {
-             e.preventDefault();
-             return false;
-        }
-    });
-
-    // --- 3. MOBILE LOGIC ---
-    document.addEventListener('visibilitychange', function() {
-        if (document.hidden) {
-            document.title = "Restricted";
-        } else {
-            document.title = "Resume — Aditya More";
-        }
-    });
-
-</script>
 
 </body>
 </html>
