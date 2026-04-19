@@ -34,7 +34,7 @@ const logos = [
   'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vscode/vscode-original.svg',
   'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/redux/redux-original.svg',
   'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/microsoftsqlserver/microsoftsqlserver-plain.svg',
-    'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/azure/azure-original.svg',
+  'https://upload.wikimedia.org/wikipedia/commons/f/fa/Microsoft_Azure.svg',
 
 ];
 
