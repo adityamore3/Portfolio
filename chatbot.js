@@ -23,7 +23,7 @@
     currentRole: {
       company: "Quinnox Consultancy Services Limited",
       title: "Consultant",
-      startDate: "June 2024",
+      startDate: "December 2025",
       responsibilities: [
         "Building and maintaining full-stack web applications using ASP.NET Core and React",
         "Designing and securing RESTful APIs with JWT authentication",
@@ -52,7 +52,7 @@
     // ---------- Skills ----------
     skills: [
       "C#", "HTML", "CSS", "JavaScript", "ASP.NET Core", "ASP.NET Core MVC",
-      "ASP.NET Core Web API", "React", "Redux", "Entity Framework Core",
+      "ASP.NET Core Web API","Azure", "React", "Redux", "Entity Framework Core",
       "SQL Server", "LINQ", "Tailwind CSS", "jQuery"
     ],
     tools: ["Visual Studio", "Git / GitHub", "Postman", "JWT", "ADO.NET"],
