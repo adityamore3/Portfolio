@@ -34,6 +34,8 @@ const logos = [
   'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/vscode/vscode-original.svg',
   'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/redux/redux-original.svg',
   'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/microsoftsqlserver/microsoftsqlserver-plain.svg',
+    'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/azure/azure-original.svg',
+
 ];
 
 const container = document.getElementById('floating-logos');
