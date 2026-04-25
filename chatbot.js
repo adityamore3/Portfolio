@@ -1,575 +1,582 @@
-/* chatbot.js — Aditya More's Portfolio Chatbot (v2)
+/* chatbot.js — Aditya More's Portfolio Chatbot (v3)
    Drop this file and include <script src="chatbot.js"></script> before </body>.
+   Now powered by Claude AI for dynamic, intelligent responses.
 */
 (function () {
 
+  if (document.getElementById("aditya-chatbot-root")) return;
+
   // ============================================================
-  // CAREER TIMELINE
+  // PROFILE DATA
   // ============================================================
-  const timeline = [
-    {
-      company:   "Quinnox",
-      title:     "Software Engineer",
-      startDate: new Date("2025-12-01"),
-      endDate:   null, // Present
-      color:     "#06b6d4",
-      icon:      "🚀",
-      tech:      "ASP.NET Core, React, SQL Server",
-      description:
-        "Currently working at Quinnox as a Software Engineer (December 2025 – Present). " +
-        "Contributing to enterprise-level full-stack web applications using ASP.NET Core and React, " +
-        "designing scalable REST APIs, and delivering high-quality software solutions for clients."
-    },
-    {
-      company:   "Aviraj Innovations Pvt Ltd",
-      title:     "Software Engineer",
-      startDate: new Date("2024-06-01"),
-      endDate:   new Date("2025-11-30"),
-      color:     "#7c3aed",
-      icon:      "💼",
-      tech:      "ASP.NET Core, React, SQL Server, JWT, Tailwind CSS",
-      description:
-        "Worked at Aviraj Innovations as a Software Engineer from June 2024 to November 2025 (1 year 6 months). " +
-        "Built full-stack web applications with ASP.NET Core and React, designed secure REST APIs with JWT authentication, " +
-        "optimised SQL Server databases, and developed responsive UIs using Tailwind CSS and jQuery."
-    }
+  const PROFILE_CONTEXT = `
+You are a friendly, professional chatbot assistant for Aditya More's portfolio website. You speak in first person about Aditya (e.g. "Aditya has..." or "He specializes in...") and keep answers concise, warm, and helpful. Use emojis sparingly and naturally.
+
+Here is everything you need to know about Aditya:
+
+NAME: Aditya More
+TITLE: Software Engineer
+LOCATION: Mumbai, India
+EMAIL: adieeoffical@gmail.com
+GITHUB: https://github.com/adityamore3
+
+EXPERIENCE: ~2 years total (June 2024 – Present)
+
+CURRENT ROLE:
+- Company: Quinnox
+- Title: Software Engineer
+- Duration: December 2025 – Present
+- Work: Enterprise-level full-stack web applications using ASP.NET Core and React, scalable REST APIs, high-quality software solutions for clients.
+
+PREVIOUS ROLE:
+- Company: Aviraj Innovations Pvt Ltd
+- Title: Software Engineer
+- Duration: June 2024 – November 2025 (1 year 6 months)
+- Work: Full-stack web apps with ASP.NET Core and React, secure REST APIs with JWT authentication, SQL Server optimisation, responsive UIs with Tailwind CSS and jQuery.
+
+SKILLS:
+- Languages: C#, HTML, CSS, JavaScript
+- Frameworks: ASP.NET Core, ASP.NET Core MVC, ASP.NET Core Web API, React, Redux, Entity Framework Core
+- Database: SQL Server, LINQ, ADO.NET
+- Styling: Tailwind CSS, jQuery
+- Tools: Visual Studio, Git & GitHub, Postman, JWT
+
+PROJECTS:
+1. College Administration ERP Platform
+   Tech: ASP.NET Core MVC, SQL Server, JWT, Razor Pages, LINQ
+   Details: Secure college ERP system with JWT authentication, role-based access control, Razor Pages UI, LINQ and Entity Framework Core for optimised data handling.
+
+2. Retail Point of Sale (POS) System
+   Tech: ASP.NET Core, React, SQL Server, REST APIs
+   Details: Full-stack POS app with real-time REST APIs, responsive React frontend, thermal printer integration, inventory/billing/reporting modules.
+
+EDUCATION: Bachelor of Engineering in Computer Engineering — Datta Meghe College of Engineering, Navi Mumbai (2022)
+
+CERTIFICATIONS:
+- J.P. Morgan Software Engineering Virtual Experience (Forage)
+- Software Engineer Certificate (HackerRank)
+
+HOBBIES:
+- Gaming (story-driven and strategy games)
+- Football (fan and casual player)
+- Music (lo-fi and hip-hop while coding)
+- Tech exploration (blogs, new frameworks)
+- Building side projects
+
+AVAILABILITY: Open to full-time roles, freelance projects, and collaborations — especially in Full Stack Web Development with ASP.NET Core, React, or modern web technologies.
+
+PERSONALITY TRAITS: Detail-oriented, methodical, eager learner, collaborative, self-motivated, writes clean maintainable code.
+
+IMPORTANT RULES:
+- Keep responses concise (2-4 sentences usually). Expand only when asked for details.
+- Never make up information not listed above.
+- If asked about resume, say it's available on request at adieeoffical@gmail.com.
+- Be warm, professional, and human — not robotic.
+- Don't use markdown headers (#, ##) in responses. Use plain text with line breaks.
+- Use bullet points sparingly, only when listing multiple items clearly.
+`;
+
+  // ============================================================
+  // CONVERSATION HISTORY
+  // ============================================================
+  const conversationHistory = [];
+
+  async function getAIReply(userMessage) {
+    conversationHistory.push({ role: "user", content: userMessage });
+
+    const messages = conversationHistory.map(m => ({ role: m.role, content: m.content }));
+
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 1000,
+        system: PROFILE_CONTEXT,
+        messages
+      })
+    });
+
+    if (!response.ok) throw new Error("API error");
+
+    const data = await response.json();
+    const reply = data.content.map(c => c.text || "").join("");
+
+    conversationHistory.push({ role: "assistant", content: reply });
+    return reply;
+  }
+
+  // ============================================================
+  // QUICK SUGGESTION CHIPS
+  // ============================================================
+  const suggestions = [
+    { label: "Career timeline", query: "Show me Aditya's career timeline" },
+    { label: "Tech skills", query: "What are his technical skills?" },
+    { label: "Projects", query: "Tell me about his projects" },
+    { label: "Current role", query: "Where does he work now?" },
+    { label: "Hobbies", query: "What are his hobbies?" },
+    { label: "Contact", query: "How do I contact Aditya?" }
   ];
 
   // ============================================================
-  // EXPERIENCE CALCULATOR
+  // STYLES
   // ============================================================
+  const style = document.createElement("style");
+  style.id = "aditya-chatbot-styles-v3";
+  style.textContent = `
+  @import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700&family=Instrument+Sans:wght@400;500&display=swap');
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes msgIn {
+    from { opacity: 0; transform: translateY(8px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 0.4; transform: scale(0.85); }
+    50%       { opacity: 1;   transform: scale(1); }
+  }
+  @keyframes chipIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  #am-chatbot-root {
+    font-family: 'Instrument Sans', system-ui, sans-serif;
+    position: fixed;
+    z-index: 999999;
+    bottom: 0; right: 0;
+  }
+
+  /* ── Toggle Button ── */
+  #am-toggle {
+    position: fixed;
+    right: 24px; bottom: 24px;
+    width: 56px; height: 56px;
+    border-radius: 16px;
+    background: #0A0A0A;
+    border: none;
+    color: white;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.25), 0 1px 3px rgba(0,0,0,0.15);
+    transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.2s ease;
+  }
+  #am-toggle:hover {
+    transform: translateY(-3px) scale(1.03);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  }
+  #am-toggle svg { transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1); }
+  #am-toggle.open svg { transform: rotate(45deg); }
+
+  /* ── Panel ── */
+  #am-panel {
+    position: fixed;
+    right: 24px; bottom: 92px;
+    width: 420px;
+    max-width: calc(100vw - 32px);
+    height: 620px;
+    max-height: calc(100svh - 110px);
+    background: #FAFAF9;
+    border-radius: 20px;
+    border: 1px solid rgba(0,0,0,0.08);
+    box-shadow: 0 24px 64px rgba(0,0,0,0.15), 0 4px 16px rgba(0,0,0,0.06);
+    display: flex; flex-direction: column;
+    overflow: hidden;
+    animation: fadeUp 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  #am-panel.hidden { display: none; }
+
+  /* ── Header ── */
+  #am-header {
+    padding: 14px 16px;
+    background: #0A0A0A;
+    display: flex; align-items: center; gap: 10px;
+    flex-shrink: 0;
+  }
+  .am-avatar {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; flex-shrink: 0;
+  }
+  .am-header-info { flex: 1; min-width: 0; }
+  .am-header-name {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-weight: 600; font-size: 13px; color: #F5F5F0;
+    letter-spacing: -0.01em;
+  }
+  .am-header-sub {
+    font-size: 11px; color: rgba(255,255,255,0.4);
+    display: flex; align-items: center; gap: 5px;
+    margin-top: 1px;
+  }
+  .am-dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: #4ade80;
+    animation: pulse 2.5s ease-in-out infinite;
+  }
+  .am-close {
+    width: 28px; height: 28px; border-radius: 8px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.5);
+    cursor: pointer; font-size: 14px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+  }
+  .am-close:hover { background: rgba(255,255,255,0.14); color: #fff; }
+
+  /* ── Messages ── */
+  #am-messages {
+    flex: 1 1 auto;
+    padding: 16px 14px;
+    overflow-y: auto;
+    background: #FAFAF9;
+    display: flex; flex-direction: column; gap: 2px;
+    scroll-behavior: smooth;
+  }
+  #am-messages::-webkit-scrollbar { width: 3px; }
+  #am-messages::-webkit-scrollbar-thumb { background: #E5E5E0; border-radius: 99px; }
+
+  .am-row {
+    display: flex; align-items: flex-end; gap: 8px;
+    animation: msgIn 0.25s ease forwards;
+    margin-bottom: 4px;
+  }
+  .am-row.bot  { justify-content: flex-start; }
+  .am-row.user { justify-content: flex-end; }
+  .am-row.user + .am-row.user,
+  .am-row.bot  + .am-row.bot  { margin-top: -2px; }
+
+  .am-bot-ico {
+    width: 26px; height: 26px; border-radius: 8px;
+    background: #0A0A0A;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; flex-shrink: 0; align-self: flex-end;
+  }
+
+  .am-bubble {
+    max-width: 80%; padding: 10px 13px;
+    border-radius: 16px; font-size: 13.5px;
+    line-height: 1.6; position: relative;
+  }
+  .am-bubble.bot {
+    background: #fff;
+    color: #1A1A18;
+    border-bottom-left-radius: 4px;
+    border: 1px solid rgba(0,0,0,0.07);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    white-space: pre-wrap;
+  }
+  .am-bubble.user {
+    background: #0A0A0A;
+    color: #F5F5F0;
+    border-bottom-right-radius: 4px;
+    font-weight: 500;
+  }
+  .am-time {
+    font-size: 10px; color: #B8B8B0;
+    margin-top: 3px; padding: 0 4px;
+    align-self: flex-end;
+  }
+
+  /* Copy on hover */
+  .am-bubble.bot:hover::after {
+    content: 'copy';
+    position: absolute; top: 6px; right: 8px;
+    font-size: 10px; color: #B8B8B0;
+    cursor: pointer; text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* ── Typing indicator ── */
+  .am-typing {
+    display: flex; gap: 4px; padding: 4px 2px;
+    align-items: center;
+  }
+  .am-typing span {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: #C8C8C0;
+    animation: pulse 1.1s ease-in-out infinite;
+  }
+  .am-typing span:nth-child(2) { animation-delay: 0.18s; }
+  .am-typing span:nth-child(3) { animation-delay: 0.36s; }
+
+  /* ── Profile Hero Card ── */
+  .am-hero-card {
+    background: #0A0A0A;
+    border-radius: 14px;
+    padding: 14px 16px;
+    color: #F5F5F0;
+    margin: 2px 0 8px 34px;
+    position: relative;
+    overflow: hidden;
+  }
+  .am-hero-card::before {
+    content: '';
+    position: absolute; top: -30px; right: -30px;
+    width: 100px; height: 100px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(99,102,241,0.3) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .am-hero-name {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-weight: 700; font-size: 16px;
+    letter-spacing: -0.02em; margin-bottom: 2px;
+  }
+  .am-hero-title {
+    font-size: 12px; color: rgba(255,255,255,0.5);
+    margin-bottom: 10px;
+  }
+  .am-hero-row {
+    display: flex; gap: 6px; flex-wrap: wrap;
+  }
+  .am-tag {
+    font-size: 11px; padding: 4px 9px;
+    border-radius: 99px;
+    background: rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.7);
+    display: flex; align-items: center; gap: 4px;
+  }
+  .am-tag.accent {
+    background: rgba(99,102,241,0.25);
+    color: #a5b4fc;
+  }
+
+  /* ── Timeline Widget ── */
+  .am-timeline {
+    margin: 2px 0 8px 34px;
+    background: #fff;
+    border: 1px solid rgba(0,0,0,0.07);
+    border-radius: 14px;
+    padding: 14px 15px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  }
+  .am-tl-header {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 11px; font-weight: 600;
+    color: #8C8C88; letter-spacing: 0.06em; text-transform: uppercase;
+    margin-bottom: 12px; display: flex; justify-content: space-between;
+    align-items: center;
+  }
+  .am-tl-badge {
+    font-size: 11px; font-weight: 600;
+    background: #f0fdf4; color: #16a34a;
+    padding: 2px 8px; border-radius: 99px;
+    text-transform: none; letter-spacing: 0;
+  }
+  .am-tl-item { margin-bottom: 12px; }
+  .am-tl-item:last-child { margin-bottom: 0; }
+  .am-tl-top {
+    display: flex; justify-content: space-between;
+    align-items: baseline; margin-bottom: 5px;
+  }
+  .am-tl-co {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 13px; font-weight: 600; color: #1A1A18;
+  }
+  .am-tl-dur {
+    font-size: 11px; color: #8C8C88;
+  }
+  .am-tl-role {
+    font-size: 11.5px; color: #6C6C68; margin-bottom: 5px;
+  }
+  .am-tl-bar-bg {
+    height: 4px; background: #F0F0EB; border-radius: 99px; overflow: hidden;
+  }
+  .am-tl-bar-fill {
+    height: 100%; border-radius: 99px;
+    transition: width 0.9s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .am-tl-dates {
+    font-size: 10.5px; color: #B8B8B0; margin-top: 3px;
+  }
+
+  /* ── Suggestions ── */
+  #am-chips {
+    padding: 10px 12px 12px;
+    display: flex; gap: 6px; flex-wrap: wrap;
+    background: #FAFAF9;
+    border-top: 1px solid rgba(0,0,0,0.05);
+    flex-shrink: 0;
+  }
+  .am-chip {
+    background: #fff;
+    border: 1px solid rgba(0,0,0,0.1);
+    border-radius: 99px;
+    padding: 5px 12px;
+    font-size: 12px; font-weight: 500;
+    color: #4A4A46;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    animation: chipIn 0.3s ease forwards;
+    opacity: 0;
+  }
+  .am-chip:hover {
+    background: #0A0A0A; color: #F5F5F0;
+    border-color: #0A0A0A;
+    transform: translateY(-1px);
+  }
+
+  /* ── Input bar ── */
+  #am-inputbar {
+    padding: 10px 12px;
+    display: flex; gap: 8px; align-items: center;
+    border-top: 1px solid rgba(0,0,0,0.06);
+    background: #fff;
+    flex-shrink: 0;
+  }
+  #am-input {
+    flex: 1; padding: 9px 13px;
+    border-radius: 12px;
+    border: 1px solid rgba(0,0,0,0.1);
+    font-size: 13.5px; font-family: 'Instrument Sans', sans-serif;
+    color: #1A1A18; background: #FAFAF9;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    caret-color: #6366f1;
+    outline: none;
+  }
+  #am-input::placeholder { color: #B8B8B0; }
+  #am-input:focus {
+    border-color: rgba(99,102,241,0.4);
+    box-shadow: 0 0 0 3px rgba(99,102,241,0.08);
+    background: #fff;
+  }
+  #am-send {
+    width: 38px; height: 38px; border-radius: 11px;
+    background: #0A0A0A; border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1), background 0.15s;
+  }
+  #am-send:hover { transform: scale(1.08); background: #222; }
+  #am-send:active { transform: scale(0.95); }
+  #am-send svg { color: white; }
+
+  #am-send.loading {
+    background: #E5E5E0;
+    pointer-events: none;
+  }
+
+  /* ── Error ── */
+  .am-error {
+    font-size: 12px; color: #ef4444; padding: 4px 8px;
+    background: #fef2f2; border-radius: 8px;
+    border: 1px solid #fecaca;
+    margin: 2px 0 6px 34px;
+  }
+
+  @media (max-width: 480px) {
+    #am-panel {
+      right: 10px; left: 10px; bottom: 78px;
+      width: auto; height: 580px; border-radius: 18px;
+    }
+    #am-toggle { right: 16px; bottom: 16px; }
+  }
+  `;
+
+  // ============================================================
+  // HELPERS
+  // ============================================================
+  function now() {
+    return new Date().toLocaleTimeString("en", { hour: "2-digit", minute: "2-digit" });
+  }
+
   function monthsBetween(start, end) {
     const e = end || new Date();
     return (e.getFullYear() - start.getFullYear()) * 12 + (e.getMonth() - start.getMonth());
   }
 
   function formatDuration(months) {
-    const y = Math.floor(months / 12);
-    const m = months % 12;
-    if (y === 0) return `${m} mo`;
-    if (m === 0) return `${y} yr${y !== 1 ? "s" : ""}`;
-    return `${y} yr${y !== 1 ? "s" : ""} ${m} mo`;
+    const y = Math.floor(months / 12), m = months % 12;
+    if (y === 0) return `${m}mo`;
+    if (m === 0) return `${y}yr`;
+    return `${y}yr ${m}mo`;
   }
 
-  function formatDateLabel(date) {
-    if (!date) return "Present";
-    return date.toLocaleString("default", { month: "short", year: "numeric" });
+  function fmtDate(d) {
+    if (!d) return "Present";
+    return d.toLocaleString("default", { month: "short", year: "numeric" });
   }
 
-  function totalExperience() {
-    const totalMonths = monthsBetween(new Date("2024-06-01"), new Date());
-    const y = Math.floor(totalMonths / 12);
-    const m = totalMonths % 12;
-    if (y === 0) return `${m} month${m !== 1 ? "s" : ""}`;
-    if (m === 0) return `${y} year${y !== 1 ? "s" : ""}`;
-    return `${y} year${y !== 1 ? "s" : ""} and ${m} month${m !== 1 ? "s" : ""}`;
+  function totalExp() {
+    const tot = monthsBetween(new Date("2024-06-01"), new Date());
+    const y = Math.floor(tot / 12), m = tot % 12;
+    if (y === 0) return `${m} months`;
+    if (m === 0) return `${y} years`;
+    return `${y} yr ${m} mo`;
   }
 
-  // ============================================================
-  // PROFILE
-  // ============================================================
-  const profile = {
-    name:     "Aditya More",
-    title:    "Software Engineer",
-    location: "Mumbai, India",
-    email:    "adieeoffical@gmail.com",
-    github:   "https://github.com/adityamore3",
-    resume:   "#",
-
-    get experience() { return totalExperience(); },
-
-    summary:
-      "Detail-oriented Software Engineer with " + totalExperience() + " of experience in Full Stack Web Development, " +
-      "specialising in ASP.NET Core, React, and SQL Server. Adept at designing secure APIs, developing " +
-      "responsive UIs, and optimising databases for performance.",
-
-    currentRole: timeline[0],
-    previousRoles: timeline.slice(1),
-
-    skills: "C#, HTML, CSS, JavaScript, ASP.NET Core, ASP.NET Core MVC, ASP.NET Core Web API, React, Redux, Entity Framework Core, SQL Server, LINQ, Tailwind CSS, jQuery.",
-    tools:  "Visual Studio, Git & GitHub, Postman, JWT, ADO.NET.",
-
-    projects: [
-      {
-        title:   "College Administration ERP Platform",
-        tech:    "ASP.NET Core MVC, SQL Server, JWT, Razor Pages, LINQ",
-        details:
-          "Built a secure college ERP system featuring JWT authentication, role-based access control, " +
-          "Razor Pages UI, and optimised data handling with LINQ and Entity Framework Core."
-      },
-      {
-        title:   "Retail Point of Sale (POS) System",
-        tech:    "ASP.NET Core, React, SQL Server, REST APIs",
-        details:
-          "Developed a full-stack POS application with real-time REST APIs, a responsive React frontend, " +
-          "integrated thermal printer support, and modules for inventory, billing, and reporting."
-      }
-    ],
-
-    education: "Bachelor of Engineering in Computer Engineering — Datta Meghe College of Engineering, Navi Mumbai (2022).",
-    certifications: [
-      "J.P. Morgan Software Engineering Virtual Experience (Forage)",
-      "Software Engineer Certificate (HackerRank)"
-    ],
-
-    hobbies: [
-      "Gaming — loves playing story-driven and strategy games in his free time 🎮",
-      "Football — passionate fan and enjoys playing casually with friends ⚽",
-      "Music — listens to lo-fi and hip-hop while coding 🎵",
-      "Tech exploration — regularly reads tech blogs and follows new frameworks & tools 💻",
-      "Building side projects — always experimenting with new ideas outside of work 🔧"
-    ],
-
-    openTo:
-      "Aditya is open to full-time roles, freelance projects, and collaborations — " +
-      "especially in Full Stack Web Development with ASP.NET Core, React, or modern web technologies."
-  };
+  const roles = [
+    {
+      company: "Quinnox", title: "Software Engineer",
+      start: new Date("2025-12-01"), end: null,
+      color: "#6366f1", weight: 35
+    },
+    {
+      company: "Aviraj Innovations", title: "Software Engineer",
+      start: new Date("2024-06-01"), end: new Date("2025-11-30"),
+      color: "#8b5cf6", weight: 65
+    }
+  ];
 
   // ============================================================
-  // TIMELINE WIDGET HTML
+  // WIDGET BUILDERS
   // ============================================================
-  function buildTimelineHTML() {
-    const totalMonths = monthsBetween(new Date("2024-06-01"), new Date());
-    const barItems = timeline.map(role => {
-      const dur = monthsBetween(role.startDate, role.endDate);
-      const pct = ((dur / totalMonths) * 100).toFixed(1);
-      return { ...role, dur, pct };
-    });
-
-    const rows = barItems.map(r => `
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
-        <div style="width:28px;height:28px;border-radius:8px;background:${r.color}22;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">${r.icon}</div>
-        <div style="flex:1;min-width:0;">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-            <span style="font-size:12px;font-weight:700;color:#0f172a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${r.company}</span>
-            <span style="font-size:11px;color:#64748b;flex-shrink:0;margin-left:6px;">${formatDuration(r.dur)}</span>
-          </div>
-          <div style="height:7px;background:#f1f5f9;border-radius:99px;overflow:hidden;">
-            <div style="height:100%;width:${r.pct}%;background:${r.color};border-radius:99px;transition:width 0.8s ease;"></div>
-          </div>
-          <div style="font-size:10.5px;color:#94a3b8;margin-top:3px;">${formatDateLabel(r.startDate)} – ${formatDateLabel(r.endDate)}</div>
-        </div>
+  function heroCard() {
+    return `
+    <div class="am-hero-card">
+      <div class="am-hero-name">Aditya More</div>
+      <div class="am-hero-title">Software Engineer · Mumbai, India</div>
+      <div class="am-hero-row">
+        <span class="am-tag accent">⚡ ${totalExp()} exp</span>
+        <span class="am-tag">ASP.NET Core</span>
+        <span class="am-tag">React</span>
+        <span class="am-tag">SQL Server</span>
       </div>
-    `).join("");
+    </div>`;
+  }
+
+  function timelineWidget() {
+    const rows = roles.map(r => {
+      const dur = monthsBetween(r.start, r.end);
+      return `
+      <div class="am-tl-item">
+        <div class="am-tl-top">
+          <span class="am-tl-co">${r.company}</span>
+          <span class="am-tl-dur">${formatDuration(dur)}</span>
+        </div>
+        <div class="am-tl-role">${r.title}</div>
+        <div class="am-tl-bar-bg">
+          <div class="am-tl-bar-fill" style="width:${r.weight}%;background:${r.color};"></div>
+        </div>
+        <div class="am-tl-dates">${fmtDate(r.start)} – ${fmtDate(r.end)}</div>
+      </div>`;
+    }).join("");
 
     return `
-      <div style="background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%);border-radius:14px;padding:16px;margin:6px 0;box-shadow:0 4px 20px rgba(0,0,0,0.15);">
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
-          <span style="font-size:16px;">⏱️</span>
-          <span style="font-size:13px;font-weight:800;color:#e2e8f0;letter-spacing:0.03em;">EXPERIENCE TIMELINE</span>
-          <span style="margin-left:auto;font-size:11px;font-weight:700;color:#06b6d4;background:rgba(6,182,212,0.12);padding:3px 9px;border-radius:99px;">${totalExperience()} total</span>
-        </div>
-        <div style="color:#e2e8f0;">${rows}</div>
-        <div style="margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.08);font-size:11px;color:#64748b;text-align:center;">
-          Started Jun 2024 · Currently at Quinnox
-        </div>
+    <div class="am-timeline">
+      <div class="am-tl-header">
+        Career timeline
+        <span class="am-tl-badge">${totalExp()} total</span>
       </div>
-    `;
+      ${rows}
+    </div>`;
   }
 
   // ============================================================
-  // Q&A RULES
+  // DOM BUILDER
   // ============================================================
-  const rules = [
-    {
-      patterns: ["hello", "hi", "hey", "good morning", "good evening", "howdy", "sup"],
-      reply: () => `Hey there! 👋 I'm Aditya's assistant bot. Ask me anything — his skills, projects, hobbies, experience, or how to reach him!`
-    },
-    {
-      patterns: ["who are you", "what are you", "introduce yourself", "your name", "are you a bot", "are you ai"],
-      reply: () => `I'm a chatbot assistant for ${profile.name}! I can answer questions about his background, skills, projects, hobbies, and more. What would you like to know? 😊`
-    },
-    {
-      patterns: ["who is aditya", "about aditya", "tell me about", "summary", "bio", "profile", "background"],
-      reply: () =>
-        `${profile.summary}\n\nHe's currently at ${profile.currentRole.company} and is based in ${profile.location}.`,
-      widget: buildTimelineHTML
-    },
-    {
-      patterns: ["timeline", "career timeline", "journey", "career journey"],
-      reply: () => `Here's Aditya's career journey so far — ${profile.experience} of building things on the web! 🗺️`,
-      widget: buildTimelineHTML
-    },
-    {
-      patterns: ["how many years", "total experience", "years of experience", "how long", "how much experience", "experience"],
-      reply: () => `Aditya has ${profile.experience} of professional experience — starting at Aviraj Innovations in June 2024, and now at Quinnox since December 2025. 💼`,
-      widget: buildTimelineHTML
-    },
-    {
-      patterns: ["current job", "current role", "current company", "currently working", "where does he work", "quinnox", "present job"],
-      reply: () => profile.currentRole.description
-    },
-    {
-      patterns: ["aviraj", "previous", "before quinnox", "past experience", "earlier", "prior", "work history", "old job"],
-      reply: () => {
-        const r = timeline[1];
-        return `${r.icon} ${r.title} @ ${r.company}\n${formatDateLabel(r.startDate)} – ${formatDateLabel(r.endDate)} (${formatDuration(monthsBetween(r.startDate, r.endDate))})\n\n${r.description}`;
-      }
-    },
-
-    {
-      patterns: ["work experience", "career", "professional experience", "employment", "job history", "all jobs"],
-      reply: () =>
-        `Aditya has ${profile.experience} of experience across 2 roles:\n\n` +
-        timeline.map(r =>
-          `${r.icon} ${r.title} @ ${r.company}\n   ${formatDateLabel(r.startDate)} – ${formatDateLabel(r.endDate)} · ${formatDuration(monthsBetween(r.startDate, r.endDate))}`
-        ).join("\n\n"),
-      widget: buildTimelineHTML
-    },
-    {
-      patterns: ["skills", "technologies", "tech stack", "what can he do", "what does he know", "languages", "frameworks"],
-      reply: () => `Here are Aditya's key skills 🛠️\n\nTech: ${profile.skills}\n\nTools: ${profile.tools}`
-    },
-    {
-      patterns: ["react", "redux"],
-      reply: () => `Yes! Aditya works with React and Redux for building responsive, dynamic frontends — used in production at both Aviraj Innovations and Quinnox. ⚛️`
-    },
-    {
-      patterns: ["asp.net", "dotnet", ".net", "c#", "csharp"],
-      reply: () => `ASP.NET Core (MVC & Web API) and C# are Aditya's primary backend technologies. He uses them daily to build secure, scalable APIs and web apps. 🔧`
-    },
-    {
-      patterns: ["sql", "database", "sql server", "linq", "entity framework"],
-      reply: () => `Aditya works with SQL Server, Entity Framework Core, LINQ, and ADO.NET. He's comfortable with both ORM-based and raw SQL approaches. 🗄️`
-    },
-    {
-      patterns: ["tailwind", "css", "styling", "ui", "frontend"],
-      reply: () => `Aditya builds responsive UIs using Tailwind CSS, jQuery, HTML, and CSS. 🎨`
-    },
-    {
-      patterns: ["project", "projects", "what has he built", "portfolio", "work samples"],
-      reply: () => profile.projects.map(p => `🔹 ${p.title}\nTech: ${p.tech}\n${p.details}`).join("\n\n")
-    },
-    {
-      patterns: ["erp", "college erp", "college administration"],
-      reply: () => { const p = profile.projects[0]; return `${p.title}\n\nTech: ${p.tech}\n\n${p.details}`; }
-    },
-    {
-      patterns: ["pos", "point of sale", "retail", "billing"],
-      reply: () => { const p = profile.projects[1]; return `${p.title}\n\nTech: ${p.tech}\n\n${p.details}`; }
-    },
-    {
-      patterns: ["education", "degree", "university", "studied", "study", "datta meghe", "college"],
-      reply: () => `🎓 ${profile.education}`
-    },
-    {
-      patterns: ["certification", "certifications", "certificate", "courses", "hackerrank", "forage", "jpmorgan"],
-      reply: () => `Aditya holds these certifications 📜\n\n• ${profile.certifications.join("\n• ")}`
-    },
-    {
-      patterns: ["hobbies", "hobby", "interests", "free time", "outside work", "personal interests", "what does he like", "what does he enjoy"],
-      reply: () => `Outside of work, Aditya enjoys:\n\n${profile.hobbies.map(h => `• ${h}`).join("\n")}`
-    },
-    {
-      patterns: ["gaming", "games", "video games", "gamer"],
-      reply: () => `Aditya loves gaming 🎮 — especially story-driven and strategy games. It's his favourite way to unwind after a long coding session!`
-    },
-    {
-      patterns: ["football", "soccer", "sport", "sports"],
-      reply: () => `Aditya is a big football fan ⚽ — he follows the game closely and enjoys playing casually with friends too.`
-    },
-    {
-      patterns: ["music", "songs", "playlist", "listening"],
-      reply: () => `Aditya loves listening to music while coding 🎵 — mostly lo-fi and hip-hop to keep in the zone.`
-    },
-    {
-      patterns: ["side project", "personal project", "experimenting"],
-      reply: () => `Aditya is always building something on the side 🔧 — he loves experimenting with new ideas and technologies beyond his day job.`
-    },
-    {
-      patterns: ["email", "contact", "reach", "get in touch", "message him", "hire", "connect"],
-      reply: () => `You can reach Aditya at 📧 ${profile.email} — he's open to full-time roles, freelance work, and collaborations!`
-    },
-    {
-      patterns: ["github", "git", "repository", "repos"],
-      reply: () => `Check out Aditya's GitHub here 👉 ${profile.github}`
-    },
-    {
-      patterns: ["resume", "cv", "download", "curriculum vitae"],
-      reply: () => profile.resume !== "#"
-        ? `You can view/download Aditya's resume here 📄 ${profile.resume}`
-        : `Aditya's resume link isn't published yet — reach him at ${profile.email} and he'll share it directly! 📧`
-    },
-    {
-      patterns: ["location", "based", "where", "city", "mumbai", "india"],
-      reply: () => `Aditya is based in ${profile.location}. 📍`
-    },
-    {
-      patterns: ["available", "open to work", "hiring", "looking for", "opportunity", "opportunities", "open for"],
-      reply: () => profile.openTo
-    },
-    {
-      patterns: ["personality", "working style", "how is he", "what is he like", "traits"],
-      reply: () =>
-        `From what I know about Aditya 😊\n\n` +
-        `• Detail-oriented and methodical in problem-solving\n` +
-        `• Always eager to learn new technologies\n` +
-        `• Collaborative team player who communicates clearly\n` +
-        `• Self-motivated with a strong work ethic\n` +
-        `• Prefers clean, maintainable code over quick hacks`
-    },
-    {
-      patterns: ["thank", "thanks", "thank you", "thx", "ty", "cheers"],
-      reply: () => `You're welcome! 😊 Feel free to ask anything else about Aditya.`
-    },
-    {
-      patterns: ["bye", "goodbye", "see you", "cya", "later", "that's all", "thats all"],
-      reply: () => `Goodbye! 👋 Feel free to come back anytime if you have more questions about Aditya.`
-    }
-  ];
-
-  const fallbacks = [
-    `I'm not sure about that one! Try asking about Aditya's skills, projects, experience, hobbies, or how to contact him. 😊`,
-    `Hmm, I don't have that info. You could ask me about his tech stack, past work, hobbies, certifications, or education!`,
-    `I didn't quite get that — try asking something like "What are his skills?" or "Show me his timeline!" 🙂`
-  ];
-
-  function getReplyData(text) {
-    const q = text.toLowerCase().trim();
-    for (const rule of rules) {
-      for (const pat of rule.patterns) {
-        if (q.includes(pat)) {
-          try {
-            return {
-              text: rule.reply(),
-              widget: rule.widget ? rule.widget() : null
-            };
-          } catch (e) {
-            return { text: fallbacks[0], widget: null };
-          }
-        }
-      }
-    }
-    return { text: fallbacks[Math.floor(Math.random() * fallbacks.length)], widget: null };
-  }
-
-  // ============================================================
-  // PREVENT DOUBLE INJECTION
-  // ============================================================
-  if (document.getElementById("aditya-chatbot-root")) return;
-
-  // ============================================================
-  // STYLES
-  // ============================================================
-  const style = document.createElement("style");
-  style.id = "aditya-chatbot-styles";
-  style.textContent = `
-  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@400;500;600&display=swap');
-
-  @keyframes fadeInUp { from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);} }
-  @keyframes slideIn { from{opacity:0;transform:translateX(-12px);}to{opacity:1;transform:translateX(0);} }
-  @keyframes slideInRight { from{opacity:0;transform:translateX(12px);}to{opacity:1;transform:translateX(0);} }
-  @keyframes blink { 0%,100%{opacity:1;}50%{opacity:0;} }
-  @keyframes rotate { from{transform:rotate(0deg);}to{transform:rotate(360deg);} }
-  @keyframes shimmer {
-    0%{background-position:-200% center;}
-    100%{background-position:200% center;}
-  }
-
-  #aditya-chatbot-root {
-    font-family:'DM Sans',system-ui,sans-serif;
-    z-index:999999;
-  }
-
-  /* Toggle button */
-  #aditya-chatbot-toggle {
-    position:fixed;right:28px;bottom:28px;
-    width:60px;height:60px;border-radius:18px;
-    display:flex;align-items:center;justify-content:center;
-    background:#0f172a;
-    border:1px solid rgba(255,255,255,0.1);
-    color:white;font-size:24px;
-    box-shadow:0 8px 32px rgba(0,0,0,0.4), 0 0 0 1px rgba(6,182,212,0.2);
-    cursor:pointer;
-    transition:all 0.25s cubic-bezier(0.4,0,0.2,1);
-  }
-  #aditya-chatbot-toggle:hover {
-    transform:translateY(-3px);
-    box-shadow:0 14px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(6,182,212,0.4);
-  }
-  #aditya-chatbot-toggle.open {
-    background:#1e293b;
-    border-color:rgba(239,68,68,0.3);
-  }
-
-  /* Panel */
-  #aditya-chatbot-panel {
-    position:fixed;right:28px;bottom:104px;
-    width:440px;max-width:calc(100vw - 40px);
-    height:680px;max-height:calc(100vh - 120px);
-    background:#0f172a;
-    border-radius:20px;
-    border:1px solid rgba(255,255,255,0.07);
-    box-shadow:0 32px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(6,182,212,0.1);
-    display:flex;flex-direction:column;overflow:hidden;
-    animation:fadeInUp 0.35s cubic-bezier(0.4,0,0.2,1);
-  }
-
-  /* Header */
-  #aditya-chatbot-header {
-    padding:16px 18px;
-    background:#0f172a;
-    border-bottom:1px solid rgba(255,255,255,0.06);
-    display:flex;align-items:center;gap:12px;
-    flex-shrink:0;
-  }
-  .aditya-avatar {
-    width:42px;height:42px;border-radius:12px;
-    background:linear-gradient(135deg,#06b6d4,#7c3aed);
-    display:flex;align-items:center;justify-content:center;
-    font-size:20px;flex-shrink:0;
-    box-shadow:0 4px 12px rgba(6,182,212,0.3);
-  }
-  .aditya-header-text { flex:1; }
-  .aditya-header-title {
-    font-family:'Syne',sans-serif;
-    font-weight:800;font-size:14px;color:#f1f5f9;
-    letter-spacing:0.02em;
-  }
-  .aditya-header-status {
-    font-size:11px;color:#64748b;
-    display:flex;align-items:center;gap:5px;margin-top:2px;
-  }
-  .aditya-status-dot {
-    width:6px;height:6px;border-radius:50%;
-    background:#22c55e;
-    animation:blink 2s ease-in-out infinite;
-  }
-  .aditya-close-btn {
-    background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);
-    width:30px;height:30px;border-radius:8px;color:#64748b;
-    cursor:pointer;display:flex;align-items:center;justify-content:center;
-    font-size:16px;transition:all 0.2s;
-  }
-  .aditya-close-btn:hover { color:#f1f5f9;background:rgba(255,255,255,0.1); }
-
-  /* Messages area */
-  #aditya-chatbot-messages {
-    flex:1 1 auto;padding:16px;
-    overflow-y:auto;
-    background:#0f172a;
-    scroll-behavior:smooth;
-  }
-  #aditya-chatbot-messages::-webkit-scrollbar { width:4px; }
-  #aditya-chatbot-messages::-webkit-scrollbar-thumb { background:#1e293b;border-radius:2px; }
-
-  .aditya-msg { margin:0 0 12px 0;display:flex;align-items:flex-end;gap:8px; }
-  .aditya-msg.bot { justify-content:flex-start;animation:slideIn 0.3s ease; }
-  .aditya-msg.user { justify-content:flex-end;animation:slideInRight 0.3s ease; }
-
-  .aditya-msg-avatar {
-    width:28px;height:28px;border-radius:9px;
-    background:linear-gradient(135deg,#06b6d4,#7c3aed);
-    display:flex;align-items:center;justify-content:center;
-    font-size:13px;flex-shrink:0;
-  }
-
-  .aditya-bubble {
-    max-width:82%;padding:11px 14px;
-    border-radius:14px;line-height:1.65;font-size:13.5px;
-  }
-  .aditya-bubble.bot {
-    background:#1e293b;color:#cbd5e1;
-    border-bottom-left-radius:4px;
-    border:1px solid rgba(255,255,255,0.05);
-  }
-  .aditya-bubble.user {
-    background:linear-gradient(135deg,#06b6d4 0%,#7c3aed 100%);
-    color:white;border-bottom-right-radius:4px;
-    font-weight:500;
-  }
-
-  /* Typing indicator */
-  .aditya-typing { display:flex;gap:5px;padding:8px 4px; }
-  .aditya-typing-dot {
-    width:7px;height:7px;border-radius:50%;background:#475569;
-    animation:blink 1.2s ease-in-out infinite;
-  }
-  .aditya-typing-dot:nth-child(2) { animation-delay:0.2s; }
-  .aditya-typing-dot:nth-child(3) { animation-delay:0.4s; }
-
-  /* Widget container */
-  .aditya-widget-wrap { margin:4px 0 12px 36px; }
-
-  /* Suggestions */
-  #aditya-chatbot-suggestions {
-    padding:10px 14px 12px;
-    display:flex;gap:7px;flex-wrap:wrap;
-    background:#0f172a;
-    border-top:1px solid rgba(255,255,255,0.05);
-    flex-shrink:0;
-  }
-  .aditya-suggestion {
-    background:rgba(6,182,212,0.07);
-    border:1px solid rgba(6,182,212,0.15);
-    border-radius:99px;padding:6px 12px;
-    font-size:12px;cursor:pointer;
-    transition:all 0.2s;color:#94a3b8;
-    font-family:'DM Sans',sans-serif;
-    font-weight:500;
-  }
-  .aditya-suggestion:hover {
-    background:rgba(6,182,212,0.15);
-    border-color:rgba(6,182,212,0.35);
-    color:#e2e8f0;
-    transform:translateY(-2px);
-  }
-
-  /* Input bar */
-  #aditya-chatbot-inputbar {
-    padding:12px 14px;
-    display:flex;gap:8px;
-    border-top:1px solid rgba(255,255,255,0.05);
-    background:#0f172a;
-    flex-shrink:0;
-  }
-  #aditya-chatbot-input {
-    flex:1;padding:11px 14px;
-    border-radius:12px;
-    border:1px solid rgba(255,255,255,0.08);
-    font-size:13.5px;
-    transition:all 0.2s;
-    font-family:'DM Sans',sans-serif;
-    color:#e2e8f0;
-    background:#1e293b;
-    caret-color:#06b6d4;
-  }
-  #aditya-chatbot-input::placeholder { color:#475569; }
-  #aditya-chatbot-input:focus {
-    outline:none;
-    border-color:rgba(6,182,212,0.4);
-    box-shadow:0 0 0 3px rgba(6,182,212,0.08);
-  }
-  #aditya-chatbot-send {
-    padding:11px 18px;border-radius:12px;border:none;
-    cursor:pointer;
-    background:linear-gradient(135deg,#06b6d4,#7c3aed);
-    color:white;font-weight:600;font-size:13px;
-    font-family:'DM Sans',sans-serif;
-    transition:all 0.2s;
-    box-shadow:0 2px 8px rgba(6,182,212,0.25);
-  }
-  #aditya-chatbot-send:hover {
-    transform:translateY(-2px);
-    box-shadow:0 4px 16px rgba(6,182,212,0.4);
-  }
-
-  @media(max-width:480px) {
-    #aditya-chatbot-panel { right:12px;left:12px;bottom:82px;width:auto;height:600px;border-radius:16px; }
-    #aditya-chatbot-toggle { right:16px;bottom:16px;width:52px;height:52px;font-size:20px;border-radius:14px; }
-    .aditya-bubble { max-width:88%;font-size:13px; }
-  }
-  `;
-
-  // ============================================================
-  // DOM HELPERS
-  // ============================================================
-  function el(tag, props, children) {
+  function el(tag, attrs, children) {
     const node = document.createElement(tag);
-    if (props) Object.entries(props).forEach(([k, v]) => {
+    if (attrs) Object.entries(attrs).forEach(([k, v]) => {
       if (k === "class") node.className = v;
-      else if (k === "html") node.innerHTML = v;
-      else if (k === "text") node.textContent = v;
+      else if (k === "html")  node.innerHTML  = v;
+      else if (k === "text")  node.textContent = v;
       else node.setAttribute(k, v);
     });
     if (children) [].concat(children).forEach(c => {
@@ -579,155 +586,174 @@
     return node;
   }
 
-  const root = el("div", { id: "aditya-chatbot-root" }, [
-    el("button", { id: "aditya-chatbot-toggle", "aria-label": "Open chat" }, ["💬"]),
-    el("div", { id: "aditya-chatbot-panel", style: "display:none;" }, [
-      el("div", { id: "aditya-chatbot-header" }, [
-        el("div", { class: "aditya-avatar" }, ["🤖"]),
-        el("div", { class: "aditya-header-text" }, [
-          el("div", { class: "aditya-header-title" }, ["Aditya's Assistant"]),
-          el("div", { class: "aditya-header-status" }, [
-            el("span", { class: "aditya-status-dot" }),
-            "Online — ask me anything!"
-          ])
-        ]),
-        el("button", { class: "aditya-close-btn", title: "Close" }, ["✕"])
-      ]),
-      el("div", { id: "aditya-chatbot-messages", role: "log", "aria-live": "polite" }),
-      el("div", { id: "aditya-chatbot-suggestions" }),
-      el("div", { id: "aditya-chatbot-inputbar" }, [
-        el("input", {
-          id: "aditya-chatbot-input", type: "text",
-          placeholder: "Ask about Aditya...",
-          "aria-label": "Type your question", autocomplete: "off"
-        }),
-        el("button", { id: "aditya-chatbot-send" }, ["Send ➤"])
-      ])
-    ])
-  ]);
+  const toggleIcon = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>`;
+  const sendIcon = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>`;
+  const closeIcon = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`;
+
+  const root = el("div", { id: "am-chatbot-root" });
+  root.innerHTML = `
+  <button id="am-toggle" aria-label="Chat with Aditya's bot">${toggleIcon}</button>
+  <div id="am-panel" class="hidden">
+    <div id="am-header">
+      <div class="am-avatar">🤖</div>
+      <div class="am-header-info">
+        <div class="am-header-name">Aditya's Assistant</div>
+        <div class="am-header-sub"><span class="am-dot"></span> Powered by Claude AI</div>
+      </div>
+      <button class="am-close" aria-label="Close">${closeIcon}</button>
+    </div>
+    <div id="am-messages" role="log" aria-live="polite"></div>
+    <div id="am-chips"></div>
+    <div id="am-inputbar">
+      <input id="am-input" type="text" placeholder="Ask me anything about Aditya…" autocomplete="off" aria-label="Your question" />
+      <button id="am-send" aria-label="Send">${sendIcon}</button>
+    </div>
+  </div>`;
 
   document.head.appendChild(style);
   document.body.appendChild(root);
 
   // ============================================================
-  // UI HELPERS
+  // REFS
   // ============================================================
-  const panel      = document.getElementById("aditya-chatbot-panel");
-  const toggle     = document.getElementById("aditya-chatbot-toggle");
-  const messagesEl = document.getElementById("aditya-chatbot-messages");
-  const sendBtn    = document.getElementById("aditya-chatbot-send");
-  const inputEl    = document.getElementById("aditya-chatbot-input");
-  const suggestEl  = document.getElementById("aditya-chatbot-suggestions");
-  const closeBtn   = document.querySelector(".aditya-close-btn");
+  const panel    = document.getElementById("am-panel");
+  const toggle   = document.getElementById("am-toggle");
+  const msgs     = document.getElementById("am-messages");
+  const chips    = document.getElementById("am-chips");
+  const input    = document.getElementById("am-input");
+  const sendBtn  = document.getElementById("am-send");
+  const closeBtn = document.querySelector(".am-close");
 
-  function appendMessage(text, who, widgetHTML) {
-    const wrapper = el("div", { class: `aditya-msg ${who}` });
-    if (who === "bot") {
-      const avatar = el("div", { class: "aditya-msg-avatar" }, ["🤖"]);
-      const bubble = el("div", { class: "aditya-bubble bot" });
-      text.split("\n").forEach((line, i, arr) => {
-        bubble.appendChild(document.createTextNode(line));
-        if (i < arr.length - 1) bubble.appendChild(el("br"));
-      });
-      wrapper.appendChild(avatar);
-      wrapper.appendChild(bubble);
-      messagesEl.appendChild(wrapper);
+  // ============================================================
+  // MESSAGE RENDERING
+  // ============================================================
+  function appendBotMessage(text, extraHTML) {
+    const row = el("div", { class: "am-row bot" });
+    row.innerHTML = `
+      <div class="am-bot-ico">🤖</div>
+      <div>
+        <div class="am-bubble bot">${text.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</div>
+        ${extraHTML || ""}
+        <div class="am-time">${now()}</div>
+      </div>`;
 
-      // Append widget as a separate row if present
-      if (widgetHTML) {
-        const widgetWrap = el("div", { class: "aditya-widget-wrap", html: widgetHTML });
-        messagesEl.appendChild(widgetWrap);
-      }
-    } else {
-      wrapper.appendChild(el("div", { class: "aditya-bubble user", text: text }));
-      messagesEl.appendChild(wrapper);
-    }
-    messagesEl.scrollTop = messagesEl.scrollHeight;
+    // Copy on click
+    row.querySelector(".am-bubble.bot").addEventListener("click", function() {
+      navigator.clipboard.writeText(text).catch(() => {});
+      const orig = this.style.opacity;
+      this.style.opacity = "0.6";
+      setTimeout(() => { this.style.opacity = orig; }, 150);
+    });
+
+    msgs.appendChild(row);
+    msgs.scrollTop = msgs.scrollHeight;
   }
 
+  function appendUserMessage(text) {
+    const row = el("div", { class: "am-row user" });
+    row.innerHTML = `
+      <div class="am-bubble user">${text.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</div>
+      <div class="am-time" style="text-align:right;">${now()}</div>`;
+    msgs.appendChild(row);
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+
+  let typingEl = null;
   function showTyping() {
-    const wrapper = el("div", { class: "aditya-msg bot", id: "aditya-typing" });
-    const avatar  = el("div", { class: "aditya-msg-avatar" }, ["🤖"]);
-    const bubble  = el("div", { class: "aditya-bubble bot" });
-    bubble.appendChild(el("div", { class: "aditya-typing" }, [
-      el("div", { class: "aditya-typing-dot" }),
-      el("div", { class: "aditya-typing-dot" }),
-      el("div", { class: "aditya-typing-dot" })
-    ]));
-    wrapper.appendChild(avatar);
-    wrapper.appendChild(bubble);
-    messagesEl.appendChild(wrapper);
-    messagesEl.scrollTop = messagesEl.scrollHeight;
+    typingEl = el("div", { class: "am-row bot", id: "am-typing-row" });
+    typingEl.innerHTML = `<div class="am-bot-ico">🤖</div><div class="am-bubble bot"><div class="am-typing"><span></span><span></span><span></span></div></div>`;
+    msgs.appendChild(typingEl);
+    msgs.scrollTop = msgs.scrollHeight;
   }
-
   function hideTyping() {
-    const t = document.getElementById("aditya-typing");
-    if (t) t.remove();
+    if (typingEl) { typingEl.remove(); typingEl = null; }
   }
 
-  function handleUserText(raw) {
-    const text = (raw || "").trim();
-    if (!text) return;
-    appendMessage(text, "user", null);
+  // ============================================================
+  // CHIP SETUP
+  // ============================================================
+  suggestions.forEach((s, i) => {
+    const btn = el("button", { class: "am-chip", type: "button", text: s.label });
+    btn.style.animationDelay = `${i * 60}ms`;
+    btn.addEventListener("click", () => handleSend(s.query));
+    chips.appendChild(btn);
+  });
+
+  // ============================================================
+  // SEND HANDLER
+  // ============================================================
+  let isLoading = false;
+
+  async function handleSend(text) {
+    const q = (text || input.value).trim();
+    if (!q || isLoading) return;
+
+    input.value = "";
+    isLoading = true;
+    sendBtn.classList.add("loading");
+    sendBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="rgba(0,0,0,0.15)" stroke-width="2.5"/><path d="M12 3a9 9 0 0 1 9 9" stroke="#888" stroke-width="2.5" stroke-linecap="round"><animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur="0.8s" repeatCount="indefinite"/></path></svg>`;
+
+    appendUserMessage(q);
     showTyping();
-    const { text: reply, widget } = getReplyData(text);
-    setTimeout(() => {
+
+    // Detect if it's a timeline/career query for widget
+    const isTimelineQ = /timeline|career|journey|experience|how long|years|worked|job|company|quinnox|aviraj/i.test(q);
+
+    try {
+      const reply = await getAIReply(q);
       hideTyping();
-      appendMessage(reply, "bot", widget);
-    }, 500 + Math.random() * 250);
+      appendBotMessage(reply, isTimelineQ ? timelineWidget() : null);
+    } catch (err) {
+      hideTyping();
+      const errEl = el("div", { class: "am-error", text: "Couldn't connect right now. Try again in a moment." });
+      msgs.appendChild(errEl);
+      msgs.scrollTop = msgs.scrollHeight;
+      conversationHistory.pop(); // remove failed user msg
+    } finally {
+      isLoading = false;
+      sendBtn.classList.remove("loading");
+      sendBtn.innerHTML = sendIcon;
+      input.focus();
+    }
   }
 
   // ============================================================
   // EVENTS
   // ============================================================
-  sendBtn.addEventListener("click", () => {
-    const t = inputEl.value; inputEl.value = ""; handleUserText(t); inputEl.focus();
-  });
-  inputEl.addEventListener("keydown", e => {
-    if (e.key === "Enter") { const t = inputEl.value; inputEl.value = ""; handleUserText(t); }
-  });
+  sendBtn.addEventListener("click", () => handleSend());
+  input.addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); } });
+
+  function openPanel() {
+    panel.classList.remove("hidden");
+    toggle.classList.add("open");
+    input.focus();
+  }
+  function closePanel() {
+    panel.classList.add("hidden");
+    toggle.classList.remove("open");
+  }
+
   toggle.addEventListener("click", () => {
-    const open = panel.style.display !== "none";
-    panel.style.display = open ? "none" : "flex";
-    toggle.textContent  = open ? "💬" : "✕";
-    toggle.classList.toggle("open", !open);
-    if (!open) inputEl.focus();
+    panel.classList.contains("hidden") ? openPanel() : closePanel();
   });
-  closeBtn.addEventListener("click", () => {
-    panel.style.display = "none"; toggle.textContent = "💬"; toggle.classList.remove("open");
-  });
+  closeBtn.addEventListener("click", closePanel);
   document.addEventListener("keydown", e => {
-    if (e.key === "Escape" && panel.style.display !== "none") {
-      panel.style.display = "none"; toggle.textContent = "💬"; toggle.classList.remove("open");
-    }
+    if (e.key === "Escape" && !panel.classList.contains("hidden")) closePanel();
   });
 
   // ============================================================
-  // SUGGESTION CHIPS
-  // ============================================================
-  ["Show timeline 📊", "Skills?", "Hobbies?", "Current role?", "Projects?", "Contact?"].forEach(s => {
-    const btn = el("button", { class: "aditya-suggestion", type: "button", text: s });
-    btn.addEventListener("click", () => handleUserText(s));
-    suggestEl.appendChild(btn);
-  });
-
-  // ============================================================
-  // INITIAL GREETING
+  // GREETING
   // ============================================================
   setTimeout(() => {
-    appendMessage(
-      `Hey there! 👋 I'm Aditya's assistant bot. He has ${profile.experience} of experience in Full Stack Web Development.\n\nAsk me about his skills, career timeline, projects, or how to reach him!`,
-      "bot",
-      buildTimelineHTML()
+    appendBotMessage(
+      `Hey there! 👋 I'm Aditya's AI assistant — powered by Claude. Ask me anything about his experience, skills, projects, or how to reach him!`,
+      heroCard() + timelineWidget()
     );
   }, 300);
 
   // ============================================================
   // PUBLIC API
   // ============================================================
-  window.AdityaChatbot = {
-    open()  { panel.style.display = "flex"; toggle.classList.add("open"); toggle.textContent = "✕"; inputEl.focus(); },
-    close() { panel.style.display = "none"; toggle.classList.remove("open"); toggle.textContent = "💬"; }
-  };
+  window.AdityaChatbot = { open: openPanel, close: closePanel };
 
 })();
