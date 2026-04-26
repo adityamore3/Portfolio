@@ -230,6 +230,7 @@
     ".am-dot{width:5px;height:5px;border-radius:50%;background:#4ade80;animation:am-pulse 2.4s ease-in-out infinite}",
     ".am-xbtn{width:26px;height:26px;border-radius:7px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.4);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .14s}",
     ".am-xbtn:hover{background:rgba(255,255,255,.13);color:#fff}",
+    ".am-exp-badge{font-size:10px;font-weight:600;color:rgba(255,255,255,.55);background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);border-radius:99px;padding:2px 8px;white-space:nowrap;flex-shrink:0}",
 
     /* messages */
     "#am-msgs{flex:1 1 auto;padding:13px 12px;overflow-y:auto;display:flex;flex-direction:column;gap:3px;scroll-behavior:smooth}",
@@ -313,6 +314,7 @@
           '<div class="am-hn">Aditya\u2019s Assistant</div>' +
           '<div class="am-hs"><span class="am-dot"></span>Online \u2014 ask me anything!</div>' +
         '</div>' +
+        '<span class="am-exp-badge">' + totalExp() + '</span>' +
         '<button class="am-xbtn" aria-label="Close">' + IC.close + '</button>' +
       '</div>' +
       '<div id="am-msgs" role="log" aria-live="polite"></div>' +
@@ -444,8 +446,7 @@
   // ─── GREETING ───────────────────────────────────────────────
   setTimeout(function () {
     addBot(
-      "Hey there! \uD83D\uDC4B I\u2019m Aditya\u2019s assistant. He has " + totalExp() + " of experience in Full Stack Web Development.\n\nAsk me about his skills, career, projects, or how to reach him!",
-      heroCard() + timelineWidget()
+      "Hey there! \uD83D\uDC4B I\u2019m Aditya\u2019s assistant. Ask me about his skills, career, projects, or how to reach him!"
     );
   }, 260);
 
