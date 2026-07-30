@@ -93,7 +93,7 @@
       r: function () { return { t: "Hey there! \uD83D\uDC4B I'm Aditya's assistant. Ask me about his skills, projects, experience, hobbies, or how to reach him!" }; } },
 
     { p: ["who are you","what are you","introduce","are you a bot","are you ai","your name"],
-      r: function () { return { t: "I'm a chatbot built for " + P.name + "'s portfolio! Ask me anything about his background, skills, projects, or hobbies. \uD83D\uDE0A" }; } },
+      r: function () { return { t: "I'm a chatbot built for " + P.name + "'s portfolio, with a bit of straw-hat adventurer spirit! \uD83D\uDC52 Ask me anything about his background, skills, projects, or hobbies. \uD83D\uDE0A" }; } },
 
     { p: ["who is aditya","about aditya","tell me about","summary","bio","profile","background"],
       r: function () { return { t: "Detail-oriented Software Engineer with " + totalExp() + " of experience in Full Stack Web Development, specialising in ASP.NET Core, React, and SQL Server.\n\nCurrently at " + roles[0].company + ", based in " + P.location + ".", w: heroCard() + timelineWidget() }; } },
@@ -180,7 +180,11 @@
       r: function () { return { t: "You\u2019re welcome! \uD83D\uDE0A Feel free to ask anything else." }; } },
 
     { p: ["bye","goodbye","see you","cya","later","that's all"],
-      r: function () { return { t: "Goodbye! \uD83D\uDC4B Come back anytime." }; } }
+      r: function () { return { t: "Goodbye! \uD83D\uDC4B Come back anytime." }; } },
+
+    /* Playful straw-hat easter egg — original phrasing only, no reproduced show/movie dialogue */
+    { p: ["luffy","monkey d","straw hat","one piece","king of the pirates","going merry","thousand sunny","gum gum","gomu gomu","nakama","pirate king","strawhat crew"],
+      r: function () { return { t: "Shishishi! \uD83D\uDC52 I'm just an assistant with a bit of straw-hat spirit \u2014 adventurous, loyal, always hungry for the next challenge (and maybe some meat \uD83C\uDF56). That's the energy I bring to helping you learn about Aditya! Now, want to hear about his skills, projects, or career voyage so far? \u26F5" }; } }
   ];
 
   var fallbacks = [
@@ -189,16 +193,42 @@
     "Try \u201CWhat are his skills?\u201D or \u201CShow me his career timeline!\u201D \uD83D\uDE42"
   ];
 
+  // ─── STRAW HAT FLAVOR (original, playful — not quoted from any show/movie) ──
+  var AVATAR = "\uD83D\uDC52"; // straw hat emoji — a nod, not a redrawing of any character
+  var luffyFlair = [
+    "Shishishi! \uD83D\uDE04",
+    "Adventure mode: activated. \u2693",
+    "That was fun \u2014 like finding a new island! \uD83C\uDFDD\uFE0F",
+    "Onward, crew! \u26F5",
+    "I could go for some meat right about now. \uD83C\uDF56",
+    "My gut says that's the right answer \u2014 and my gut is never wrong! \uD83D\uDE04",
+    "Straw hat approved. \uD83D\uDC52",
+    "Set sail for the next question! \u26F5\uD83C\uDF0A",
+    "Full speed ahead, nakama! \uD83D\uDDFA\uFE0F",
+    "Yosh! Locked that one in. \uD83D\uDD25",
+    "That answer's got some serious grand-line energy. \uD83D\uDDFA\uFE0F",
+    "Shishishi, easy one! Next adventure? \uD83C\uDF0A"
+  ];
+  function maybeFlair() {
+    // ~2 in 5 replies get a light, original flourish
+    return Math.random() < 0.4 ? ("\n\n" + luffyFlair[Math.floor(Math.random() * luffyFlair.length)]) : "";
+  }
+
   function getReply(text) {
     var q = text.toLowerCase();
     for (var i = 0; i < rules.length; i++) {
       for (var j = 0; j < rules[i].p.length; j++) {
         if (q.indexOf(rules[i].p[j]) !== -1) {
-          try { return rules[i].r(); } catch (e) { return { t: fallbacks[0] }; }
+          try {
+            var res = rules[i].r();
+            res.t = res.t + maybeFlair();
+            return res;
+          } catch (e) { return { t: fallbacks[0] }; }
         }
       }
     }
-    return { t: fallbacks[Math.floor(Math.random() * fallbacks.length)] };
+    var fb = fallbacks[Math.floor(Math.random() * fallbacks.length)];
+    return { t: fb + maybeFlair() };
   }
 
   // ─── STYLES (Glass Edition) ─────────────────────────────────
@@ -375,10 +405,10 @@
     '<button id="am-btn" aria-label="Open chat">' + IC.chat + '</button>' +
     '<div id="am-panel" class="am-hidden">' +
       '<div id="am-hdr">' +
-        '<div class="am-av">\uD83E\uDD16</div>' +
+        '<div class="am-av">' + AVATAR + '</div>' +
         '<div style="flex:1;min-width:0">' +
           '<div class="am-hn">Aditya\u2019s Assistant</div>' +
-          '<div class="am-hs"><span class="am-dot"></span>Online \u2014 ask me anything!</div>' +
+          '<div class="am-hs"><span class="am-dot"></span>Online \u2014 shishishi, ask me anything! \uD83C\uDF0A</div>' +
         '</div>' +
         '<span class="am-exp-badge">' + totalExp() + '</span>' +
         '<button class="am-xbtn" aria-label="Close">' + IC.close + '</button>' +
@@ -412,7 +442,7 @@
     var row = document.createElement("div");
     row.className = "am-row bot";
     row.innerHTML =
-      '<div class="am-ico">\uD83E\uDD16</div>' +
+      '<div class="am-ico">' + AVATAR + '</div>' +
       '<div>' +
         '<div class="am-bub b">' + esc(text) + '</div>' +
         (widget || "") +
@@ -437,10 +467,11 @@
   }
 
   var trow = null;
+  var typingLines = ["Thinking\u2026 \uD83E\uDD14", "Charting a course\u2026 \uD83D\uDDFA\uFE0F", "One sec, nakama\u2026 \u26F5"];
   function showTyping() {
     trow = document.createElement("div");
     trow.className = "am-row bot";
-    trow.innerHTML = '<div class="am-ico">\uD83E\uDD16</div><div class="am-bub b"><div class="am-typing"><i></i><i></i><i></i></div></div>';
+    trow.innerHTML = '<div class="am-ico">' + AVATAR + '</div><div class="am-bub b"><div class="am-typing"><i></i><i></i><i></i></div></div>';
     msgs.appendChild(trow);
     msgs.scrollTop = msgs.scrollHeight;
   }
@@ -512,7 +543,7 @@
   // ─── GREETING ───────────────────────────────────────────────
   setTimeout(function () {
     addBot(
-      "Hey there! \uD83D\uDC4B I\u2019m Aditya\u2019s assistant. Ask me about his skills, career, projects, or how to reach him!"
+      "Shishishi! \uD83D\uDC52 Hey there, I\u2019m Aditya\u2019s assistant \u2014 straw hat on, ready to set sail! Ask me about his skills, career, projects, or how to reach him!"
     );
   }, 260);
 
