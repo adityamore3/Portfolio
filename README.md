@@ -1,5 +1,5 @@
 # My-Portfolio
-Hi! I'm Aditya More, a Full-Stack Software Engineer with 1.3 years of experience in designing, developing, and deploying scalable web applications. I enjoy working across the entire development cycle — from crafting intuitive front-end interfaces to building efficient back-end systems.
+Hi! I'm Aditya More, a Full-Stack Software Engineer with 2.2 years of experience in designing, developing, and deploying scalable web applications. I enjoy working across the entire development cycle — from crafting intuitive front-end interfaces to building efficient back-end systems.
 
 💡 What I bring to the table:
 
